@@ -32,13 +32,18 @@ while [ -n "$1" ]; do
         exit 1
         ;;
     *)
-        PACKAGE=$1
+        PACKAGES=$1
         break
         ;;
     esac
     shift
 done
 
+echo $PACKAGES
 CONTAINER="ros-$ROS_DISTRO:test"
 
-# continue ...
+docker run -it \
+    --env ROS_DISTRO=$ROS_DISTRO \
+    --volume $(realpath $SRC_REPOS):/root/src.repos \
+    $CONTAINER \
+    test_entrypoint.sh $PACKAGES # entrypoint arguments

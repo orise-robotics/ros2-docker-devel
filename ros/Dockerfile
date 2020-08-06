@@ -37,9 +37,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
-# bootstrap rosdep
-RUN rosdep init && \
-    rosdep update
+
+WORKDIR /root
+COPY test_entrypoint.sh /usr/bin/
 
 CMD ["bash"]
 
