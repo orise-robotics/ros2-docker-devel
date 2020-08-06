@@ -1,7 +1,7 @@
 #!/bin/env bash
 
 function usage() {
-    printf "Usage: $0 [options] [PACKAGE.] t]\n"
+    printf "Usage: $0 [options] [PACKAGE] t]\n"
     printf "Build test and devel images for the provided ROS_DISTRO\n\n"
     printf "Options:\n"
     printf "  -h|--help\t\t Shows this help message\n"
@@ -13,7 +13,7 @@ function usage() {
 }
 
 SRC_REPOS="src.repos"
-PACKAGES=""
+PACKAGE=""
 ROS_DISTRO="noetic"
 
 while [ -n "$1" ]; do
@@ -32,18 +32,23 @@ while [ -n "$1" ]; do
         exit 1
         ;;
     *)
-        PACKAGES=$1
+        PACKAGE=$1
         break
         ;;
     esac
     shift
 done
 
-echo $PACKAGES
 CONTAINER="ros-$ROS_DISTRO:test"
+UBUNTU_DISTRO=$(lsb_release -cs)
 
 docker run -it \
     --env ROS_DISTRO=$ROS_DISTRO \
     --volume $(realpath $SRC_REPOS):/root/src.repos \
+    --volume="${UBUNTU_DISTRO}_apt_cache:/var/cache/apt/archives" \
     $CONTAINER \
-    test_entrypoint.sh $PACKAGES # entrypoint arguments
+    test_entrypoint.sh $PACKAGE # entrypoint arguments
+
+# TODO: work for multiple packages, volume apt-update, rosdep, source and builds
+
+# docker volume rm "${UBUNTU_DISTRO}_apt_cache" > /dev/null 2>&1
