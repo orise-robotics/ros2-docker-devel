@@ -1,12 +1,12 @@
 #!/bin/env bash
 
 function usage() {
-    printf "Usage: $0 [options] [PACKAGE] t]\n"
+    printf "Usage: $0 [options] [PACKAGE]\n"
     printf "Build test and devel images for the provided ROS_DISTRO\n\n"
     printf "Options:\n"
     printf "  -h|--help\t\t Shows this help message\n"
     printf "  -c|--clear-cache\t\t Clear apt-get persistent volume"
-    printf "  -d|--distro\t\t Ubuntu distro (look for 'ros-DISTRO:test' image) [default=noetic]\n"
+    printf "  -d|--distro\t\t ROS distro (look for 'ros-DISTRO:test' image) [default=noetic]\n"
     printf "  -s|--source\t\t Vcstool .repos file [default = 'src.repos'\n"
 
     exit 0
@@ -39,14 +39,20 @@ while [ -n "$1" ]; do
     shift
 done
 
-CONTAINER="ros-$ROS_DISTRO:test"
+IMAGE="ros-$ROS_DISTRO:test"
+CONTAINER="ros-$ROS_DISTRO-test"
 UBUNTU_DISTRO=$(lsb_release -cs)
+
+if [ "docker ps -q -f name=$CONTAINER -f status=exited" ]; then
+    docker container rm $CONTAINER
+fi
 
 docker run -it \
     --env ROS_DISTRO=$ROS_DISTRO \
     --volume $(realpath $SRC_REPOS):/root/src.repos \
     --volume="${UBUNTU_DISTRO}_apt_cache:/var/cache/apt/archives" \
-    $CONTAINER \
+    --name="ros-$ROS_DISTRO-test" \
+    $IMAGE \
     test_entrypoint.sh $PACKAGE # entrypoint arguments
 
 # TODO: work for multiple packages, volume apt-update, rosdep, source and builds
