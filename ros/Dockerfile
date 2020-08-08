@@ -54,5 +54,12 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && rm -rf /var/lib/apt/lists/*
 
 ENV ROS_DISTRO=$ROS_DISTRO
-RUN echo 'PS1="\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$"' >> /etc/skel/.profile
-RUN echo 'source /opt/ros/noetic/source.bash' >> /etc/skel/.profile
+
+RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/bash.bashrc
+RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /etc/bash.bashrc
+
+COPY devel_entrypoint.sh /usr/bin/devel_entrypoint.sh
+
+ENTRYPOINT ["devel_entrypoint.sh"]
+
+CMD ["bash"]
