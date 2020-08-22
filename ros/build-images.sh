@@ -24,17 +24,35 @@ while [ -n "$1" ]; do
 done
 
 ROS_DISTRO=${1-noetic}
+ROS_VERSION=""
 UBUNTU_DISTRO=""
 
 case $ROS_DISTRO in
-noetic) UBUNTU_DISTRO="focal" ;;
-melodic) UBUNTU_DISTRO="bionic" ;;
-kinetic) UBUNTU_DISTRO="xenial" ;;
+noetic)
+    ROS_VERSION=""
+    UBUNTU_DISTRO="focal"
+    ;;
+melodic)
+    ROS_VERSION=""
+    UBUNTU_DISTRO="bionic"
+    ;;
+kinetic)
+    ROS_VERSION=""
+    UBUNTU_DISTRO="xenial"
+    ;;
+foxy)
+    ROS_VERSION=2
+    UBUNTU_DISTRO="focal"
+    ;;
+dashing)
+    ROS_VERSION=2
+    UBUNTU_DISTRO="bionic"
+    ;;
 *)
     echo "Not supported ROS_DISTRO '$ROS_DISTRO'" 1>&2
     exit 1
     ;;
 esac
 
-docker build --build-arg UBUNTU_DISTRO=$UBUNTU_DISTRO --target test-build -t ros-$ROS_DISTRO:test .
-docker build --build-arg UBUNTU_DISTRO=$UBUNTU_DISTRO --build-arg ROS_DISTRO=$ROS_DISTRO --target devel-build -t ros-$ROS_DISTRO:devel .
+docker build --build-arg ROS_VERSION=$ROS_VERSION --build-arg UBUNTU_DISTRO=$UBUNTU_DISTRO --target test-build -t ros-$ROS_DISTRO:test .
+docker build --build-arg ROS_VERSION=$ROS_VERSION --build-arg UBUNTU_DISTRO=$UBUNTU_DISTRO --build-arg ROS_DISTRO=$ROS_DISTRO --target devel-build -t ros-$ROS_DISTRO:devel .
