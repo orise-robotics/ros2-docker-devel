@@ -16,7 +16,7 @@ while [ -n "$1" ]; do
     case $1 in
     -h | --help) usage ;;
     -d | --distro)
-        ROS_DISTRO = $2
+        ROS_DISTRO=$2
         shift
         ;;
     -?*)
@@ -48,8 +48,10 @@ if [ ! "$(docker ps -q -f name=$COINTAINER)" ]; then
             --volume="/etc/localtime:/etc/localtime:ro" \
             --user=$(id -u $USER):$(id -g $USER) \
             --env="DISPLAY" \
-            --volume="/home/$USER/.ssh:/home/$USER/.ssh" \
-            --volume="/home/$USER/.ssh:/home/$USER/.gitconfig" \
+            --volume="/home/$USER/.ssh/known_hosts:/home/$USER/.ssh/known_hosts:ro" \
+            --volume="/home/$USER/.ssh/id_rsa:/home/$USER/.ssh/id_rsa:ro" \
+            --volume="/home/$USER/.ssh/id_rsa.pub:/home/$USER/.ssh/id_rsa.pub:ro" \
+            --volume="/home/$USER/.gitconfig:/etc/gitconfig:ro" \
             --volume="/etc/group:/etc/group:ro" \
             --volume="/etc/passwd:/etc/passwd:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \

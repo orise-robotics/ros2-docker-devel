@@ -17,7 +17,7 @@ vcs import --input src.repos src/
 
 echo "<<<$PACKAGE: ROSDEP INSTALL>>>"
 rosdep install --rosdistro=$ROS_DISTRO -y --from-paths src/$PACKAGE
-source /opt/ros/noetic/setup.bash
+source /opt/ros/$ROS_DISTRO/setup.bash
 
 echo "<<<$PACKAGE: BUILD>>>"
 colcon build --packages-up-to $(basename $PACKAGE)
