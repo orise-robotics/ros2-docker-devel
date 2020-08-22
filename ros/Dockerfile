@@ -32,6 +32,7 @@ ENV LC_ALL C.UTF-8
 RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential \
     git \
+    python3-colcon-mixin \
     python3-rosdep \
     python3-vcstool \
     python3-colcon-common-extensions \
@@ -51,12 +52,14 @@ ARG ROS_DISTRO
 RUN apt-get update && apt-get install --no-install-recommends -y \
     ros-$ROS_DISTRO-ros-base \
     nano \
+    bash-completion \
     && rm -rf /var/lib/apt/lists/*
 
 ENV ROS_DISTRO=$ROS_DISTRO
 
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/bash.bashrc
 RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /etc/bash.bashrc
+RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /etc/skel/.bashrc
 
 COPY devel_entrypoint.sh /usr/bin/devel_entrypoint.sh
 
