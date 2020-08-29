@@ -1,2 +1,3 @@
-# docker_ws
-My docker workspace
+# ros_ws
+
+My ROS workspace
