@@ -2,8 +2,6 @@
 
 PACKAGE=$1
 
-echo $PACKAGE
-
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
 
@@ -27,4 +25,6 @@ source install/local_setup.sh
 echo "<<<$PACKAGE: TEST>>>"
 colcon test --packages-select $(basename $PACKAGE)
 
-colcon test-result
+colcon test-result --verbose
+
+exec /bin/bash
