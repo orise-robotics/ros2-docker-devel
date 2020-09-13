@@ -40,7 +40,7 @@ if [ ! -d "${VOLUMES_FOLDER}" ]; then
     mkdir -p "${VOLUMES_FOLDER}"
 fi
 
-if [ ! "$(docker ps -q -f name=$COINTAINER)" ]; then
+if [ ! "$(docker ps -q -f name=$CONTAINER)" ]; then
     if [ ! "$(docker ps -aq -f status=exited -f name=$CONTAINER)" ]; then
         docker create -it \
             --net host \
