@@ -7,7 +7,7 @@ function usage() {
     printf "  -h|--help\t\t Shows this help message\n"
     printf "  -c|--clear-cache\t\t Clear apt-get persistent volume"
     printf "  -d|--distro\t\t ROS distro (look for 'ros-DISTRO:test' image) [default=noetic]\n"
-    printf "  -s|--source\t\t Vcstool .repos file [default = 'src.repos'\n"
+    printf "  -s|--source\t\t VCStool .repos file [default = 'src.repos']\n"
 
     exit 0
 }
