@@ -20,11 +20,11 @@ while [ -n "$1" ]; do
     case $1 in
     -h | --help) usage ;;
     -d | --distro)
-        ROS_DISTRO = $2
+        ROS_DISTRO=$2
         shift
         ;;
     -s | --source)
-        SRC_REPOS = $2
+        SRC_REPOS=$2
         shift
         ;;
     -?*)
