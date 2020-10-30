@@ -15,8 +15,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: docker build --build-arg ROS_VERSION=$ROS_VERSION --build-arg UBUNTU_DISTRO=$UBUNTU_DISTRO --build-arg ROS_DISTRO=$ROS_DISTRO --target devel-build -t ros2-foxy:devel .
+    - run: docker build --build-arg ROS_VERSION=$ROS_VERSION --build-arg UBUNTU_DISTRO=$UBUNTU_DISTRO --build-arg ROS_DISTRO=$ROS_DISTRO --target devel-build -t ros$ROS_VERSION-$ROS_DISTRO:devel .
       
     - uses: Azure/container-scan@v0
       with:
-        image-name: ros2-foxy:devel
+        image-name: ros${{ env.ROS_VERSION }}-${{ env.ROS_DISTRO }}:devel
