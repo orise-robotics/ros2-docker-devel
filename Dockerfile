@@ -50,8 +50,6 @@ FROM test-build as devel-build
 
 ARG ROS_DISTRO
 
-USER root
-
 RUN apt-get update && apt-get install --no-install-recommends -y \
     ros-$ROS_DISTRO-ros-base \
     nano \
@@ -65,5 +63,7 @@ RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\
 RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /etc/skel/.bashrc
 
 COPY devel_entrypoint.sh /usr/bin/devel_entrypoint.sh
+
+ENTRYPOINT ["devel_entrypoint.sh"]
 
 CMD ["bash"]
