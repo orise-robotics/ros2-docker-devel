@@ -23,5 +23,5 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     
-    - run: docker tag ros$ROS_VERSION-$ROS_DISTRO:devel openbr/ros$ROS_VERSION-$ROS_DISTRO:devel
-    - run: docker push openbr/ros$ROS_VERSION-$ROS_DISTRO:devel
+    - run: docker tag ros-$ROS_DISTRO:devel openbr/ros-$ROS_DISTRO:devel
+    - run: docker push openbr/ros-$ROS_DISTRO:devel
