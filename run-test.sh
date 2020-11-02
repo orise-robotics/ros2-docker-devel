@@ -51,6 +51,8 @@ docker run -it \
     --env ROS_DISTRO=$ROS_DISTRO \
     --volume $(realpath $SRC_REPOS):/root/src.repos \
     --volume="${UBUNTU_DISTRO}_apt_cache:/var/cache/apt/archives" \
+    --gpus all \
+    --env="NVIDIA_DRIVER_CAPABILITIES=utility,graphics,compute" \
     --name="ros-$ROS_DISTRO-test" \
     $IMAGE \
     test_entrypoint.sh $PACKAGE # entrypoint arguments
