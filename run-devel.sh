@@ -59,7 +59,7 @@ if [ ! "$(docker ps -q -f name=$CONTAINER)" ]; then
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
             --privileged \
             --gpus all \
-            --env="NVIDIA_DRIVER_CAPABILITIES=utility,graphics,compute"\
+            --env="NVIDIA_DRIVER_CAPABILITIES=utility,graphics,compute" \
             --workdir="/home/$USER" \
             --name $CONTAINER \
             $IMAGE
