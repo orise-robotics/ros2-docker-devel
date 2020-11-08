@@ -1,0 +1,28 @@
+name: "docker-deploy-foxy"
+
+on: 
+  push:
+    branches:
+      - master
+      - main
+
+env:
+  ROS_VERSION: 2
+  UBUNTU_DISTRO: focal
+  ROS_DISTRO: foxy
+
+jobs:
+  dockerhub-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - uses: docker/login-action@v1
+      name: Login to DockerHub
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+    - run: docker build --build-arg ROS_VERSION=$ROS_VERSION --build-arg UBUNTU_DISTRO=$UBUNTU_DISTRO --build-arg ROS_DISTRO=$ROS_DISTRO --target devel-build -t ros-$ROS_DISTRO:devel .
+    - run: docker tag ros-$ROS_DISTRO:devel openbr/ros-$ROS_DISTRO:devel
+    - run: docker push openbr/ros-$ROS_DISTRO:devel
