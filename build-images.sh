@@ -60,7 +60,6 @@ set_python_version() {
   else
     PYTHON_VERSION="3"
   fi
-  echo "python version is $PYTHON_VERSION"
 }
 
 build_image() {
