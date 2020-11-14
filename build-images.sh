@@ -55,7 +55,7 @@ validate_ros_distro() {
 
 set_python_version() {
   local distro=$1
-  if [[ "${ROS_DISTRO}" == "kinetic" || "${distro}" == "melodic" ]]; then
+  if [[ "${distro}" == "kinetic" || "${distro}" == "melodic" ]]; then
     PYTHON_VERSION="" # 2
   else
     PYTHON_VERSION="3"
