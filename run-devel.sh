@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 function usage() {
     printf "Usage: $0 [options]\n"
@@ -10,7 +10,7 @@ function usage() {
     exit 0
 }
 
-ROS_DISTRO="noetic"
+. settings.sh  # set initial values
 
 while [ -n "$1" ]; do
     case $1 in
@@ -31,20 +31,21 @@ while [ -n "$1" ]; do
     shift
 done
 
-CONTAINER="ros-$ROS_DISTRO-devel"
-IMAGE="ros-$ROS_DISTRO:devel"
+CONTAINER="orise-robotics_ros-$ROS_DISTRO-devel"
+IMAGE="orise-robotics/ros-$ROS_DISTRO:devel"
 
-VOLUMES_FOLDER=$HOME/dev_ws/volumes/$CONTAINER
+VOLUME="${VOLUMES_FOLDER}/$CONTAINER"
+echo "folder name ${VOLUMES_FOLDER}"
 
-if [ ! -d "${VOLUMES_FOLDER}" ]; then
-    mkdir -p "${VOLUMES_FOLDER}"
+if [ ! -d "${VOLUME}" ]; then
+    mkdir -p "${VOLUME}"
 fi
 
 if [ ! "$(docker ps -q -f name=$CONTAINER)" ]; then
     if [ ! "$(docker ps -aq -f status=exited -f name=$CONTAINER)" ]; then
         docker create -it \
             --net host \
-            --volume="${VOLUMES_FOLDER}:/home/$USER:rw" \
+            --volume="${VOLUME}:/home/$USER:rw" \
             --volume="/etc/localtime:/etc/localtime:ro" \
             --user=$(id -u $USER):$(id -g $USER) \
             --env="DISPLAY" \
