@@ -6,11 +6,8 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     bash-completion \
-    curl \
     pkg-config \
     git \
-    locales \
-    tzdata \
     vim \
     && rm -rf /var/lib/apt/lists/*
 
