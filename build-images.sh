@@ -53,24 +53,14 @@ validate_ros_distro() {
   fi
 }
 
-set_python_version() {
-  local distro=$1
-  if [[ "${distro}" == "kinetic" || "${distro}" == "melodic" ]]; then
-    PYTHON_VERSION="" # 2
-  else
-    PYTHON_VERSION="3"
-  fi
-}
-
 build_image() {
   validate_ros_distro ${ROS_DISTRO}
-  set_python_version ${ROS_DISTRO}
 
   if [[ "$BUILD_TEST" == "true" ]]; then
-    docker build --build-arg ROS_DISTRO=$ROS_DISTRO --build-arg PYTHON_VERSION=$PYTHON_VERSION -t orise-robotics/ros-$ROS_DISTRO:test -f Dockerfile.test .
+    docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t orise-robotics/ros-$ROS_DISTRO:test -f Dockerfile.test .
   fi
 
-  docker build --build-arg ROS_DISTRO=$ROS_DISTRO --build-arg PYTHON_VERSION=$PYTHON_VERSION -t orise-robotics/ros-$ROS_DISTRO:devel .
+  docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t orise-robotics/ros-$ROS_DISTRO:devel .
 }
 
 main() {

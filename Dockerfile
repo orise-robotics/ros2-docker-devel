@@ -8,13 +8,11 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     bash-completion \
     curl \
     pkg-config \
-    sudo \
     git \
     locales \
     tzdata \
     vim \
     && rm -rf /var/lib/apt/lists/*
-
 
 # install ros tools
 RUN apt-get update && \
