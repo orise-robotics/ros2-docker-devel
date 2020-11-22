@@ -39,8 +39,7 @@ while [ -n "$1" ]; do
     shift
 done
 
-IMAGE="ros-$ROS_DISTRO:test"
-CONTAINER="ros-$ROS_DISTRO-test"
+IMAGE="oriserobotics/$ROS_DISTRO:test"
 UBUNTU_DISTRO=$(lsb_release -cs)
 
 if [ "docker ps -q -f name=$CONTAINER -f status=exited" ]; then

@@ -57,10 +57,10 @@ build_image() {
   validate_ros_distro ${ROS_DISTRO}
 
   if [[ "$BUILD_TEST" == "true" ]]; then
-    docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t orise-robotics/ros-$ROS_DISTRO:test -f Dockerfile.test .
+    docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:test -f Dockerfile.test .
   fi
 
-  docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t orise-robotics/ros-$ROS_DISTRO:devel .
+  docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:devel .
 }
 
 main() {
