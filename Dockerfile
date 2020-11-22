@@ -1,6 +1,6 @@
 ARG ROS_DISTRO
 
-FROM ros:${ROS_DISTRO}-ros-core
+FROM ros:${ROS_DISTRO}-ros-base
 
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update && \
