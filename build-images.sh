@@ -19,7 +19,7 @@ parse_args() {
 
   eval set -- "$OPTS"
 
-  . settings.sh  # set initial values
+  . .config  # set initial values
 
   while true ; do
     case "$1" in
@@ -58,9 +58,9 @@ build_image() {
 
   if [[ "$BUILD_TEST" == "true" ]]; then
     docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:test -f Dockerfile.test .
+  else
+    docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:devel .
   fi
-
-  docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:devel .
 }
 
 main() {

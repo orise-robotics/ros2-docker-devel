@@ -19,8 +19,4 @@ RUN apt-get update && \
     python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
-COPY devel_entrypoint.sh /usr/bin/devel_entrypoint.sh
-
-ENTRYPOINT ["devel_entrypoint.sh"]
-
 CMD ["bash"]

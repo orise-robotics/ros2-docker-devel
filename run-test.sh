@@ -2,7 +2,7 @@
 
 function usage() {
     printf "Usage: $0 [options] [PACKAGE]\n"
-    printf "Build test and devel images for the provided ROS_DISTRO\n\n"
+    printf "Run the test containter for the provided ROS_DISTRO\n\n"
     printf "Options:\n"
     printf "  -h|--help\t\t Shows this help message\n"
     printf "  -c|--clear-cache\t\t Clear apt-get persistent volume"

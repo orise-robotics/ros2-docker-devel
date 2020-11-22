@@ -2,7 +2,7 @@
 
 function usage() {
     printf "Usage: $0 [options]\n"
-    printf "Build test and devel images for the provided ROS_DISTRO\n\n"
+    printf "Run development container for the provided ROS_DISTRO\n\n"
     printf "Options:\n"
     printf "  -h|--help\t\t Shows this help message\n"
     printf "  -d|--distro\t\t ROS distro (look for 'ros-DISTRO:devel' image) [default=noetic]\n"
@@ -10,7 +10,7 @@ function usage() {
     exit 0
 }
 
-. settings.sh  # set initial values
+. .config  # set initial values
 
 while [ -n "$1" ]; do
     case $1 in
@@ -35,7 +35,6 @@ CONTAINER="orise-$ROS_DISTRO-devel"
 IMAGE="oriserobotics/ros-$ROS_DISTRO:devel"
 
 VOLUME="${VOLUMES_FOLDER}/$CONTAINER"
-echo "folder name ${VOLUMES_FOLDER}"
 
 if [ ! -d "${VOLUME}" ]; then
     mkdir -p "${VOLUME}"
