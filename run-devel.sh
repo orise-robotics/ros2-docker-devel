@@ -31,6 +31,7 @@ while [ -n "$1" ]; do
     shift
 done
 
+CONTAINER="orise-$ROS_DISTRO-devel"
 IMAGE="oriserobotics/ros-$ROS_DISTRO:devel"
 
 VOLUME="${VOLUMES_FOLDER}/$CONTAINER"

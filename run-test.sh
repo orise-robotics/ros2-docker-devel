@@ -39,6 +39,7 @@ while [ -n "$1" ]; do
     shift
 done
 
+CONTAINER="orise-$ROS_DISTRO-test"
 IMAGE="oriserobotics/$ROS_DISTRO:test"
 UBUNTU_DISTRO=$(lsb_release -cs)
 
