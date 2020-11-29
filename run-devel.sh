@@ -10,7 +10,7 @@ usage() {
     exit 0
 }
 
-. .config  # set initial values
+. .env  # set initial values
 
 while [ -n "$1" ]; do
     case $1 in
@@ -31,32 +31,19 @@ while [ -n "$1" ]; do
     shift
 done
 
-CONTAINER="orise-$ROS_DISTRO-devel"
-IMAGE="oriserobotics/ros-$ROS_DISTRO:devel"
-
-VOLUME="${VOLUMES_FOLDER}/$CONTAINER"
+VOLUME="${VOLUMES_FOLDER}/$CONTAINER_NAME"
 
 if [ ! -d "${VOLUME}" ]; then
     mkdir -p "${VOLUME}"
 fi
 
-if [ ! "$(docker ps -q -f name=$CONTAINER)" ]; then
-    if [ ! "$(docker ps -aq -f status=exited -f name=$CONTAINER)" ]; then
-        docker create -it \
-            --volume="${VOLUME}:/home/${DOCKER_USER}:rw" \
-            --volume="/home/$USER/.ssh/known_hosts:/home/${DOCKER_USER}/.ssh/known_hosts:rw" \
-            --volume="/home/$USER/.ssh/id_rsa:/home/${DOCKER_USER}/.ssh/id_rsa:ro" \
-            --volume="/home/$USER/.ssh/id_rsa.pub:/home/${DOCKER_USER}/.ssh/id_rsa.pub:ro" \
-            --volume="/home/$USER/.gitconfig:/etc/gitconfig:ro" \
-            --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-            --env="DISPLAY" \
-            --gpus 'all,"capabilities=utility,graphics,compute"' \
-            --net host \
-            --privileged \
-            --name $CONTAINER \
-            $IMAGE
-    fi
-    docker start -ai $CONTAINER
-else
-    docker exec --user ${DOCKER_USER} -it $CONTAINER /bin/bash
-fi
+ROS_DISTRO=$ROS_DISTRO \
+COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER \
+VOLUMES_FOLDER=$VOLUMES_FOLDER \
+CONTAINER_NAME=$CONTAINER_NAME \
+DOCKER_USER=$DOCKER_USER \
+docker-compose up -d devel
+
+docker exec -ti --user $DOCKER_USER $CONTAINER_NAME /bin/bash
+
+docker-compose stop devel
