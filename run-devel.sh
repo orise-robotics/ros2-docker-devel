@@ -1,16 +1,16 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
-function usage() {
+usage() {
     printf "Usage: $0 [options]\n"
-    printf "Build test and devel images for the provided ROS_DISTRO\n\n"
+    printf "Run development container for the provided ROS_DISTRO\n\n"
     printf "Options:\n"
     printf "  -h|--help\t\t Shows this help message\n"
-    printf "  -d|--distro\t\t ROS distro (look for 'ros-DISTRO:devel' image) [default=noetic]\n"
+    printf "  -d|--distro\t\t ROS distro [default=noetic]\n"
 
     exit 0
 }
 
-ROS_DISTRO="noetic"
+. .config  # set initial values
 
 while [ -n "$1" ]; do
     case $1 in
@@ -31,20 +31,20 @@ while [ -n "$1" ]; do
     shift
 done
 
-CONTAINER="ros-$ROS_DISTRO-devel"
-IMAGE="ros-$ROS_DISTRO:devel"
+CONTAINER="orise-$ROS_DISTRO-devel"
+IMAGE="oriserobotics/ros-$ROS_DISTRO:devel"
 
-VOLUMES_FOLDER=$HOME/dev_ws/volumes/$CONTAINER
+VOLUME="${VOLUMES_FOLDER}/$CONTAINER"
 
-if [ ! -d "${VOLUMES_FOLDER}" ]; then
-    mkdir -p "${VOLUMES_FOLDER}"
+if [ ! -d "${VOLUME}" ]; then
+    mkdir -p "${VOLUME}"
 fi
 
 if [ ! "$(docker ps -q -f name=$CONTAINER)" ]; then
     if [ ! "$(docker ps -aq -f status=exited -f name=$CONTAINER)" ]; then
         docker create -it \
             --net host \
-            --volume="${VOLUMES_FOLDER}:/home/$USER:rw" \
+            --volume="${VOLUME}:/home/$USER:rw" \
             --volume="/etc/localtime:/etc/localtime:ro" \
             --user=$(id -u $USER):$(id -g $USER) \
             --env="DISPLAY" \

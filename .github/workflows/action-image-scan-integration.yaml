@@ -12,23 +12,15 @@ jobs:
   docker-best-practices:
     strategy:
       matrix:
-        include:
-          - ros-version: 2
-            ros-distro: foxy
-            ubuntu-distro: focal
-          - ros-version: 2
-            ros-distro: dashing
-            ubuntu-distro: bionic
+        ros-distro: [foxy, dashing]
     env:
-      ROS_VERSION: ${{ matrix.ros-version }}
-      UBUNTU_DISTRO: ${{ matrix.ubuntu-distro }}
       ROS_DISTRO: ${{ matrix.ros-distro }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
-    - run: docker build --build-arg ROS_VERSION=$ROS_VERSION --build-arg UBUNTU_DISTRO=$UBUNTU_DISTRO --build-arg ROS_DISTRO=$ROS_DISTRO --target devel-build -t ros-$ROS_DISTRO:devel .
+    - run: docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:devel .
       
     - uses: Azure/container-scan@v0
       with:
-        image-name: ros-${{ env.ROS_DISTRO }}:devel
+        image-name: oriserobotics/ros-${{ env.ROS_DISTRO }}:devel

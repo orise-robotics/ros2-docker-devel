@@ -1,58 +1,72 @@
 #!/bin/env bash
 
-function usage() {
+usage() {
     printf "Usage: $0 [ROS_DISTRO] t]\n"
     printf "Build test and devel images for the provided ROS_DISTRO\n\n"
     printf "Options:\n"
+    printf "  -d|--distro\t\t Shows this help message [default=noetic]\n"
+    printf "  --test\t\t Builds the test image [default=false] \n"
     printf "  -h|--help\t\t Shows this help message\n"
 
     exit 0
 }
 
-while [ -n "$1" ]; do
-    case $1 in
-    -h | --help) usage ;;
-    -?*)
-        echo "Unknown option '$1'" 1>&2
-        exit 1
+parse_args() {
+  local SHORT=h,d:
+  local LONG=distro:
+
+  local OPTS=$(getopt -o $SHORT -l $LONG --name "$0" -- "$@")
+
+  if [ $? != 0 ] ; then echo "Failed to parse options...exiting." >&2 ; exit 1 ; fi
+
+  eval set -- "$OPTS"
+
+  . .config  # set initial values
+
+  while true ; do
+    case "$1" in
+      -d | --distro )
+        ROS_DISTRO="$2"
+        shift 2
         ;;
-    *)
+      --test )
+        BUILD_TEST="$2"
+        shift 2
+        ;;
+      -- )
+        shift
         break
         ;;
+      -h | *)
+        usage
+        shift
+        ;;
     esac
-    shift
-done
+  done
 
-ROS_DISTRO=${1-noetic}
-ROS_VERSION=""
-UBUNTU_DISTRO=""
+}
 
-case $ROS_DISTRO in
-noetic)
-    ROS_VERSION=""
-    UBUNTU_DISTRO="focal"
-    ;;
-melodic)
-    ROS_VERSION=""
-    UBUNTU_DISTRO="bionic"
-    ;;
-kinetic)
-    ROS_VERSION=""
-    UBUNTU_DISTRO="xenial"
-    ;;
-foxy)
-    ROS_VERSION=2
-    UBUNTU_DISTRO="focal"
-    ;;
-dashing)
-    ROS_VERSION=2
-    UBUNTU_DISTRO="bionic"
-    ;;
-*)
-    echo "Not supported ROS_DISTRO '$ROS_DISTRO'" 1>&2
+validate_ros_distro() {
+  local distro=$1
+  if [[ ! $VALID_ROS_DISTROS =~ (^|[[:space:]])"${distro}"($|[[:space:]]) ]]; then
+    echo "Not supported ROS_DISTRO '${distro}'. Supported are '${VALID_ROS_DISTROS}'" &2
     exit 1
-    ;;
-esac
+  fi
+}
 
-docker build --build-arg ROS_VERSION=$ROS_VERSION --build-arg UBUNTU_DISTRO=$UBUNTU_DISTRO --target test-build -t ros-$ROS_DISTRO:test .
-docker build --build-arg ROS_VERSION=$ROS_VERSION --build-arg UBUNTU_DISTRO=$UBUNTU_DISTRO --build-arg ROS_DISTRO=$ROS_DISTRO --target devel-build -t ros-$ROS_DISTRO:devel .
+build_image() {
+  validate_ros_distro ${ROS_DISTRO}
+
+  if [[ "$BUILD_TEST" == "true" ]]; then
+    docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:test -f Dockerfile.test .
+  else
+    docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:devel .
+  fi
+}
+
+main() {
+    parse_args "$@"
+    build_image
+}
+
+main "$@"
