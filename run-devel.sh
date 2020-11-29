@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-function usage() {
+usage() {
     printf "Usage: $0 [options]\n"
     printf "Run development container for the provided ROS_DISTRO\n\n"
     printf "Options:\n"
     printf "  -h|--help\t\t Shows this help message\n"
-    printf "  -d|--distro\t\t ROS distro (look for 'ros-DISTRO:devel' image) [default=noetic]\n"
+    printf "  -d|--distro\t\t ROS distro [default=noetic]\n"
 
     exit 0
 }

@@ -4,6 +4,8 @@ usage() {
     printf "Usage: $0 [ROS_DISTRO] t]\n"
     printf "Build test and devel images for the provided ROS_DISTRO\n\n"
     printf "Options:\n"
+    printf "  -d|--distro\t\t Shows this help message [default=noetic]\n"
+    printf "  --test\t\t Builds the test image [default=false] \n"
     printf "  -h|--help\t\t Shows this help message\n"
 
     exit 0
@@ -47,8 +49,7 @@ parse_args() {
 validate_ros_distro() {
   local distro=$1
   if [[ ! $VALID_ROS_DISTROS =~ (^|[[:space:]])"${distro}"($|[[:space:]]) ]]; then
-    echo "Not supported ROS_DISTRO '${distro}'" &2
-    usage
+    echo "Not supported ROS_DISTRO '${distro}'. Supported are '${VALID_ROS_DISTROS}'" &2
     exit 1
   fi
 }
