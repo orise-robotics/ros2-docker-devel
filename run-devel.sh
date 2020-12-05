@@ -58,5 +58,5 @@ if [ ! "$(docker ps -q -f name=$CONTAINER)" ]; then
     fi
     docker start -ai $CONTAINER
 else
-    docker exec -ti $CONTAINER /bin/bash
+    docker exec --user ${DOCKER_USER} -it $CONTAINER /bin/bash
 fi
