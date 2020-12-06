@@ -31,9 +31,9 @@ RUN apt-get update && \
     python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir /home/${DOCKER_USER} && chown ${DOCKER_USER}:${DOCKER_USER} /home/${DOCKER_USER};
+RUN mkdir -p /home/${DOCKER_USER}/devel_ws && chown ${DOCKER_USER}:${DOCKER_USER} /home/${DOCKER_USER}/devel_ws;
 
-WORKDIR /home/${DOCKER_USER}
+WORKDIR /home/${DOCKER_USER}/devel_ws
 
 COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 
