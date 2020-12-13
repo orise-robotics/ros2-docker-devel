@@ -37,11 +37,6 @@ if [ ! -d "${VOLUME}" ]; then
     mkdir -p "${VOLUME}"
 fi
 
-ROS_DISTRO=$ROS_DISTRO \
-COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER \
-VOLUMES_FOLDER=$VOLUMES_FOLDER \
-CONTAINER_NAME=$CONTAINER_NAME \
-DOCKER_USER=$DOCKER_USER \
 docker-compose up -d devel
 
 docker exec -ti --user $DOCKER_USER $CONTAINER_NAME /bin/bash
