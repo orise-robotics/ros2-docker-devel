@@ -31,14 +31,19 @@ while [ -n "$1" ]; do
     shift
 done
 
+CONTAINER_NAME="orise-$ROS_DISTRO-devel"
+
 VOLUME="${VOLUMES_FOLDER}/$CONTAINER_NAME"
 
 if [ ! -d "${VOLUME}" ]; then
     mkdir -p "${VOLUME}"
 fi
 
-docker-compose up -d devel
+ROS_DISTRO=$ROS_DISTRO \
+VOLUMES_FOLDER=$VOLUMES_FOLDER \
+CONTAINER_NAME=$CONTAINER_NAME \
+docker-compose --env-file .env up -d devel
 
-docker exec -ti --user $DOCKER_USER $CONTAINER_NAME /bin/bash
+docker exec -ti --user orise $CONTAINER_NAME /bin/bash
 
 docker-compose stop devel

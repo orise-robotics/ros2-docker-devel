@@ -13,19 +13,18 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=all
       - DISPLAY
       - COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER
-      - USER=$DOCKER_USER
+      - USER=orise
     network_mode: host
     volumes:
-      - ~/.ssh/known_hosts:/home/$DOCKER_USER/.ssh/known_hosts:rw
-      - ~/.ssh/id_rsa:/home/$DOCKER_USER/.ssh/id_rsa:ro
-      - ~/.ssh/id_rsa.pub:/home/$DOCKER_USER/.ssh/id_rsa.pub:ro
+      - ~/.ssh/known_hosts:/home/orise/.ssh/known_hosts:rw
+      - ~/.ssh/id_rsa:/home/orise/.ssh/id_rsa:ro
+      - ~/.ssh/id_rsa.pub:/home/orise/.ssh/id_rsa.pub:ro
       - ~/.gitconfig:/etc/gitconfig:ro
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $VOLUMES_FOLDER/$CONTAINER_NAME:/home/$DOCKER_USER:rw
+      - $VOLUMES_FOLDER/$CONTAINER_NAME:/home/orise:rw
       - /etc/localtime:/etc/localtime:ro
     privileged: true
     working_dir: $COLCON_WORKSPACE_FOLDER
     container_name: $CONTAINER_NAME
     stdin_open: true # docker run -i
     tty: true # docker run -t
-    env_file: .env

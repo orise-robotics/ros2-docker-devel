@@ -11,6 +11,8 @@ usage() {
     exit 0
 }
 
+readonly VALID_ROS_DISTROS="kinetic melodic noetic foxy dashing"
+
 parse_args() {
   local SHORT=h,d:
   local LONG=distro:
@@ -21,7 +23,7 @@ parse_args() {
 
   eval set -- "$OPTS"
 
-  . .config  # set initial values
+  . .env  # set initial values
 
   while true ; do
     case "$1" in
