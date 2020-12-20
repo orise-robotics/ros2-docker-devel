@@ -6,6 +6,9 @@ ARG DOCKER_USER=orise
 
 RUN useradd -s /bin/bash ${DOCKER_USER}
 
+RUN echo "${DOCKER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${DOCKER_USER} && \
+    chmod 0440 /etc/sudoers.d/${DOCKER_USER}
+
 # install gosu
 RUN set -eux; \
     apt-get update; \
