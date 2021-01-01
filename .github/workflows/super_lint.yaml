@@ -12,4 +12,5 @@ jobs:
         # VALIDATE_ALL_CODEBASE: false # TOOD: uncomment on next PR
         DEFAULT_BRANCH: main
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        FILTER_REGEX_EXCLUDE: \.github\/workflows\/pull_request_template.md
+        FILTER_REGEX_EXCLUDE: \.github\/pull_request_template.md
+        DOCKERFILE_HADOLINT_FILE_NAME: .github/super-lint/.hadolint.yml
