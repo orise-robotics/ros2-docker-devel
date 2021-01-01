@@ -8,19 +8,24 @@ This repository provides simple tools to develop and test ROS and ROS2 packages 
 
 ## Build Images
 
-Dockerfile defines multi-stage build with the targets:
-1. `test-build`: the minimum needed to download and build a ROS package
-2. `devel-build`: `test-build` + `ros-$ROS_DISTRO-ros-base` packages
+This repository provides two Dockerfiles:
+1. `Dockerfile:` image for development purpose. It is based on `ros-$ROS_DISTRO-ros-base` image + basic development setup
+2. `Dockerfile.test:` image for test purpose. It has the minimum set of tools to download and build a ROS package. It is based on the `ros:${ROS_DISTRO}-ros-core` image
 
-The script `build-images.sh` automates the creation of the images given the target ROS distro name. For example:
+We provide some ready-to-use development images in the [DockerHub](https://hub.docker.com/u/oriserobotics).
+
+You can also build the images with the script `build-images.sh`. It automates the creation of the images given the target ROS distro name. For example:
 ```console
-./build-images.sh -d dashing
+./build-images.sh -d foxy
 ```
-Creates the develop image `ros-dashing:devel`. If you want the test image `ros-dashing:test` instead, you may pass the `--test` argument:
+Creates the develop image `ros-foxy:devel`.
+
+If you want the test image `ros-foxy:test` instead, you may pass the `--test` argument:
 ```console
-./build-images.sh --test -d dashing
+./build-images.sh --test -d foxy
 ```
 
+Run `./build-images.sh --help` for more information.
 
 ## Test
 
@@ -46,7 +51,7 @@ The script `run_devel.sh` creates a devel container (or start/attach to an exist
 ```console
 ./run-devel.sh -d melodic
 ```
-will attach to the container `ros-melodic-devel`. 
+will attach to the container `ros-melodic-devel`.
 
 ### Running sudo commands
 

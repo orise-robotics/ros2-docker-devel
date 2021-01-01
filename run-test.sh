@@ -1,24 +1,30 @@
 #!/bin/env bash
 
 function usage() {
-    printf "Usage: $0 [options] [PACKAGE]\n"
-    printf "Run the test containter for the provided ROS_DISTRO\n\n"
+    printf "Usage: %s [options] PACKAGE\n" "$0"
+    printf "Run the tests of the provided PACKAGE (format: [meta-package/]package) in an orise containter defined by ROS_DISTRO\n"
+    printf "The source is provided by a VCStool .repos file through the --source option\n\n"
     printf "Options:\n"
+    printf "  -b|--build\t\t Force image build\n"
     printf "  -h|--help\t\t Shows this help message\n"
-    printf "  -c|--clear-cache\t\t Clear apt-get persistent volume"
-    printf "  -d|--distro\t\t ROS distro (look for 'ros-DISTRO:test' image) [default=noetic]\n"
-    printf "  -s|--source\t\t VCStool .repos file [default = 'src.repos']\n"
+    printf "  -d|--distro ROS_DISTRO\t ROS distro [default: defined in .env file]. Creates/runs a container named 'orise-ROS_DISTRO-test'.\n"
+    printf "  -s|--source SRC_REPOS_FILE\t VCStool .repos file [default = './src.repos']\n"
 
     exit 0
 }
 
+# shellcheck source=/dev/null
+source .env
+
 SRC_REPOS="src.repos"
 PACKAGE=""
-ROS_DISTRO="noetic"
 
 while [ -n "$1" ]; do
     case $1 in
     -h | --help) usage ;;
+    -b | --build)
+        BUILD_IMAGE_OPT="--build"
+        ;;
     -d | --distro)
         ROS_DISTRO=$2
         shift
@@ -39,23 +45,15 @@ while [ -n "$1" ]; do
     shift
 done
 
-CONTAINER="orise-$ROS_DISTRO-test"
-IMAGE="oriserobotics/$ROS_DISTRO:test"
-UBUNTU_DISTRO=$(lsb_release -cs)
+CONTAINER_NAME="orise-$ROS_DISTRO-test"
+SRC_REPOS=$(realpath "$SRC_REPOS")
 
-if [ "docker ps -q -f name=$CONTAINER -f status=exited" ]; then
-    docker container rm $CONTAINER
-fi
+# TODO: setup apt-cache volume
 
-docker run -it \
-    --env ROS_DISTRO=$ROS_DISTRO \
-    --volume $(realpath $SRC_REPOS):/root/src.repos \
-    --volume="${UBUNTU_DISTRO}_apt_cache:/var/cache/apt/archives" \
-    --gpus 'all,"capabilities=utility,graphics,compute"' \
-    --name="ros-$ROS_DISTRO-test" \
-    $IMAGE \
-    test_entrypoint.sh $PACKAGE # entrypoint arguments
+ROS_DISTRO=$ROS_DISTRO \
+  CONTAINER_NAME=$CONTAINER_NAME \
+  SRC_REPOS=$SRC_REPOS \
+  PACKAGE=$PACKAGE \
+  docker-compose --env-file .env up $BUILD_IMAGE_OPT test
 
-# TODO: work for multiple packages, volume apt-update, rosdep, source and builds
-
-# docker volume rm "${UBUNTU_DISTRO}_apt_cache" > /dev/null 2>&1
+docker-compose stop test
