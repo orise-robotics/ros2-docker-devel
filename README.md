@@ -1,8 +1,8 @@
+# ORise's ROS Workspace
+
 ![docker-deploy-foxy](https://github.com/open-br/ros_ws/workflows/docker-deploy-foxy/badge.svg?branch=master)
 ![docker-deploy-dashing](https://github.com/open-br/ros_ws/workflows/docker-deploy-dashing/badge.svg?branch=master)
 ![docker-build](https://github.com/open-br/ros_ws/workflows/docker-build/badge.svg?branch=master)
-
-# ORise's ROS Workspace
 
 This repository provides simple tools to develop and test ROS and ROS2 packages using Docker.
 

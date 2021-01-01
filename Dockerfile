@@ -12,7 +12,7 @@ RUN echo "${DOCKER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${DOCKER_USER
 # install gosu
 RUN set -eux; \
     apt-get update; \
-    apt-get install -y gosu; \
+    apt-get install -y --no-install-recommends gosu; \
     rm -rf /var/lib/apt/lists/*; \
     gosu nobody true
 
