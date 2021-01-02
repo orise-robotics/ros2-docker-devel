@@ -37,7 +37,8 @@ RUN apt-get update && \
 RUN mkdir -p /home/${DOCKER_USER}/devel_ws && chown ${DOCKER_USER}:${DOCKER_USER} /home/${DOCKER_USER}/devel_ws;
 
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/bash.bashrc
-RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /etc/bash.bashrc
+RUN cp /etc/skel/.bashrc /home/${DOCKER_USER}/.bashrc
+RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /home/${DOCKER_USER}/.bashrc
 
 WORKDIR /home/${DOCKER_USER}/devel_ws
 
