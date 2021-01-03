@@ -3,21 +3,18 @@
 function usage() {
     printf "Usage: %s [options] PACKAGE\n" "$0"
     printf "Run the tests of the provided PACKAGE (format: [meta-package/]package) in an orise containter defined by ROS_DISTRO\n"
-    printf "The source is provided by a VCStool .repos file through the --source option\n\n"
+    printf "The source is provided by a VCStool .repos file through the --source option or setting the SRC_REPOS varible in the .env file (default)\n\n"
     printf "Options:\n"
     printf "  -b|--build\t\t Force image build\n"
     printf "  -h|--help\t\t Shows this help message\n"
     printf "  -d|--distro ROS_DISTRO\t ROS distro [default: defined in .env file]. Creates/runs a container named 'orise-ROS_DISTRO-test'.\n"
-    printf "  -s|--source SRC_REPOS_FILE\t VCStool .repos file [default = './src.repos']\n"
+    printf "  -s|--source SRC_REPOS_FILE\t VCStool .repos file [default: defined in .env file]\n"
 
     exit 0
 }
 
 # shellcheck source=/dev/null
 source .env
-
-SRC_REPOS="src.repos"
-PACKAGE=""
 
 while [ -n "$1" ]; do
     case $1 in
