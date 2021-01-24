@@ -6,6 +6,11 @@
 
 This repository provides simple tools to develop and test ROS and ROS2 packages using Docker.
 
+## Dependencies
+
+* [Docker 19.03+](https://docs.docker.com/engine/install/)
+* [Docker Compose 1.28+](https://docs.docker.com/compose/install/)
+
 ## Develop within a Container
 
 The script `run_devel.sh` creates a devel container (or start/attach to an existing one) given the target ROS distro. For example, the command:
