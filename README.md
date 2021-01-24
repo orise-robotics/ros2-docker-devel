@@ -14,9 +14,12 @@ Dockerfile defines multi-stage build with the targets:
 
 The script `build-images.sh` automates the creation of the images given the target ROS distro name. For example:
 ```console
-./build-images.sh dashing
+./build-images.sh -d dashing
 ```
-Creates two images called `ros-dashing:test` and `ros-dashing:devel`.
+Creates the develop image `ros-dashing:devel`. If you want the test image `ros-dashing:test` instead, you may pass the `--test` argument:
+```console
+./build-images.sh --test -d dashing
+```
 
 
 ## Test
@@ -43,4 +46,13 @@ The script `run_devel.sh` creates a devel container (or start/attach to an exist
 ```console
 ./run-devel.sh -d melodic
 ```
-will attach to the container `ros-melodic-devel`.
+will attach to the container `ros-melodic-devel`. 
+
+### Running sudo commands
+
+By default, the orise user does not have root privileges. If you desire to run sudo commands, you can execute them from outside the container by using docker exec. For instance, to install the deb package `foo`, the user can run:
+
+```console
+docker exec apt install foo
+```
+and then sucessfully install the desired package.

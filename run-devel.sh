@@ -43,27 +43,20 @@ fi
 if [ ! "$(docker ps -q -f name=$CONTAINER)" ]; then
     if [ ! "$(docker ps -aq -f status=exited -f name=$CONTAINER)" ]; then
         docker create -it \
-            --net host \
-            --volume="${VOLUME}:/home/$USER:rw" \
-            --volume="/etc/localtime:/etc/localtime:ro" \
-            --user=$(id -u $USER):$(id -g $USER) \
-            --env="DISPLAY" \
-            --volume="/home/$USER/.ssh/known_hosts:/home/$USER/.ssh/known_hosts:rw" \
-            --volume="/home/$USER/.ssh/id_rsa:/home/$USER/.ssh/id_rsa:ro" \
-            --volume="/home/$USER/.ssh/id_rsa.pub:/home/$USER/.ssh/id_rsa.pub:ro" \
+            --volume="${VOLUME}:/home/${DOCKER_USER}:rw" \
+            --volume="/home/$USER/.ssh/known_hosts:/home/${DOCKER_USER}/.ssh/known_hosts:rw" \
+            --volume="/home/$USER/.ssh/id_rsa:/home/${DOCKER_USER}/.ssh/id_rsa:ro" \
+            --volume="/home/$USER/.ssh/id_rsa.pub:/home/${DOCKER_USER}/.ssh/id_rsa.pub:ro" \
             --volume="/home/$USER/.gitconfig:/etc/gitconfig:ro" \
-            --volume="/etc/group:/etc/group:ro" \
-            --volume="/etc/passwd:/etc/passwd:ro" \
-            --volume="/etc/shadow:/etc/shadow:ro" \
-            --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-            --privileged \
+            --env="DISPLAY" \
             --gpus 'all,"capabilities=utility,graphics,compute"' \
-            --workdir="/home/$USER" \
+            --net host \
+            --privileged \
             --name $CONTAINER \
             $IMAGE
     fi
     docker start -ai $CONTAINER
 else
-    docker exec -ti $CONTAINER /bin/bash
+    docker exec --user ${DOCKER_USER} -it $CONTAINER /bin/bash
 fi
