@@ -19,15 +19,6 @@ The script `run_devel.sh` creates a devel container (or start/attach to an exist
 ```
 will attach to the container `ros-melodic-devel`.
 
-### Running sudo commands
-
-By default, the orise user does not have root privileges. If you desire to run sudo commands, you can execute them from outside the container by using docker exec. For instance, to install the deb package `foo`, the user can run:
-
-```console
-docker exec apt install foo
-```
-and then sucessfully install the desired package.
-
 ## Test in a Container
 
 The script `run_test.sh` starts a test container given the target ROS distro, then test the target package selected from the provided source list ([vcstools](https://github.com/dirk-thomas/vcstool) format). For example:
