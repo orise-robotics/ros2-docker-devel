@@ -14,11 +14,22 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential \
     git \
     python3-colcon-mixin \
+    python3-pip \
     python3-rosdep \
     python3-vcstool \
     python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
+# install ament_flake8 non-declared pip deps
+RUN pip3 install \
+    flake8-blind-except \
+    flake8-builtins \
+    flake8-class-newline \
+    flake8-comprehensions \
+    flake8-deprecated \
+    flake8-docstrings \
+    flake8-import-order \
+    flake8-quotes
 
 WORKDIR /root
 COPY test_entrypoint.sh /usr/bin/

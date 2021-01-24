@@ -23,8 +23,20 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     bash-completion \
     pkg-config \
     git \
+    python3-pip \
     vim \
     && rm -rf /var/lib/apt/lists/*
+
+# install ament_flake8 non-declared pip deps
+RUN pip3 install \
+    flake8-blind-except \
+    flake8-builtins \
+    flake8-class-newline \
+    flake8-comprehensions \
+    flake8-deprecated \
+    flake8-docstrings \
+    flake8-import-order \
+    flake8-quotes
 
 # install ros tools
 RUN apt-get update && \
