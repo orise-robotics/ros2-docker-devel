@@ -2,9 +2,10 @@
 
 usage() {
   printf "Usage: %s [options]\n" "$0"
-  printf "Run development container for the provided ROS_DISTRO\n\n"
+  printf "Run development container given the .env configuration\n\n"
   printf "Options:\n"
   printf "  -b|--build\t\t Force image build\n"
+  printf "  -d|--distro ROS_DISTRO Override target ROS distro in .env file\n"
   printf "  -h|--help\t\t Shows this help message\n"
 
   exit 0
