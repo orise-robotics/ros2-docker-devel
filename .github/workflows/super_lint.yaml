@@ -1,0 +1,15 @@
+name: Super Lint
+on: [pull_request]
+jobs:
+  super-lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: git checkout
+      uses: actions/checkout@v2
+    - name: super lint
+      uses: github/super-linter@v3
+      env:
+        # VALIDATE_ALL_CODEBASE: false # TOOD: uncomment on next PR
+        DEFAULT_BRANCH: main
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        FILTER_REGEX_EXCLUDE: \.github\/pull_request_template.md
