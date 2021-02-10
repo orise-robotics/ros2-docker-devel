@@ -15,12 +15,13 @@ jobs:
         ros-distro: [foxy, dashing]
     env:
       ROS_DISTRO: ${{ matrix.ros-distro }}
+      TRIVY_IGNORE_UNFIXED: 1
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
     - run: docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:devel .
-      
+
     - uses: Azure/container-scan@v0
       with:
         image-name: oriserobotics/ros-${{ env.ROS_DISTRO }}:devel
