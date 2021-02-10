@@ -16,7 +16,7 @@ jobs:
         ros-distro: [foxy, dashing]
     env:
       ROS_DISTRO: ${{ matrix.ros-distro }}
-      TRIVY_IGNORE_UNFIXED: 1
+      # TRIVY_IGNORE_UNFIXED: 1
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
