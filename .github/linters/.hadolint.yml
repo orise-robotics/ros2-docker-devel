@@ -1,2 +1,4 @@
 ignored:
-  - DL3008
+  # it's good to be in sync with the latest versions of the tools and only pin versions in specific cases
+  - DL3008 # warning: Pin versions in apt get install.
+  - DL3013 # warning: Pin versions in pip.

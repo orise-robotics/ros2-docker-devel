@@ -28,7 +28,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     && rm -rf /var/lib/apt/lists/*
 
 # install ament_flake8 non-declared pip deps
-RUN pip3 install \
+RUN pip3 install --no-cache-dir \
     flake8-blind-except \
     flake8-builtins \
     flake8-class-newline \
