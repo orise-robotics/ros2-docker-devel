@@ -16,6 +16,11 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*; \
     gosu nobody true
 
+# make security updates
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends unattended-upgrades && unattended-upgrade && \
+    rm -rf /var/lib/apt/lists/*
+
 # install common dev tools
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update && \
