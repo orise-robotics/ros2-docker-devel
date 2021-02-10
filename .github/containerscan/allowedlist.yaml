@@ -1,5 +1,5 @@
-general:
-  vulnerabilities:
-    - CVE-2020-12351
-    - CVE-2020-16119
-    - CVE-2020-1971
+# general:
+#   vulnerabilities:
+#     - CVE-2020-12351
+#     - CVE-2020-16119
+#     - CVE-2020-1971
