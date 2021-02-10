@@ -18,7 +18,7 @@ RUN set -eux; \
 
 # install common dev tools
 RUN export DEBIAN_FRONTEND=noninteractive; \
-    apt-get update && apt-get upgrade -y --no-install-recommends && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
     bash-completion \
     pkg-config \
