@@ -1,5 +1,9 @@
 name: Super Lint
-on: [pull_request]
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
 jobs:
   super-lint:
     runs-on: ubuntu-latest
@@ -9,7 +13,6 @@ jobs:
     - name: super lint
       uses: github/super-linter@v3
       env:
-        # VALIDATE_ALL_CODEBASE: false # TOOD: uncomment on next PR
         DEFAULT_BRANCH: main
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FILTER_REGEX_EXCLUDE: \.github\/pull_request_template.md
