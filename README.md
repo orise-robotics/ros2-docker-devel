@@ -19,6 +19,8 @@ The script `run_devel.sh` creates a devel container (or start/attach to an exist
 ```
 will attach to the container `ros-melodic-devel`.
 
+We recommend you to try [vscode_ros2_ws](https://github.com/orise-robotics/vscode_ros2_ws), a vscode workspace with all the tools needed to develop ROS2 packages in ORise's development containers with ease.
+
 ## Test in a Container
 
 The script `run_test.sh` starts a test container given the target ROS distro, then test the target package selected from the provided source list ([vcstools](https://github.com/dirk-thomas/vcstool) format). For example:
