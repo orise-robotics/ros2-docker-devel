@@ -46,10 +46,11 @@ if [ ! -d "${VOLUME}" ]; then
   mkdir -p "${VOLUME}"
 fi
 
+# shellcheck disable=SC2097,SC2098
 ROS_DISTRO=$ROS_DISTRO \
   VOLUMES_FOLDER=$VOLUMES_FOLDER \
   CONTAINER_NAME=$CONTAINER_NAME \
-  docker-compose --env-file .env up $BUILD_IMAGE_OPT -d devel
+  docker-compose -p "$ROS_DISTRO" --env-file .env up $BUILD_IMAGE_OPT -d devel
 
 docker exec -ti --user orise "$CONTAINER_NAME" /bin/bash
 
