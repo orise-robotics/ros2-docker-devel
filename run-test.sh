@@ -15,12 +15,13 @@ function usage() {
 
 # shellcheck source=/dev/null
 source .env
+BUILD_IMAGE_OPT="pull"
 
 while [ -n "$1" ]; do
     case $1 in
     -h | --help) usage ;;
     -b | --build)
-        BUILD_IMAGE_OPT="--build"
+        BUILD_IMAGE_OPT="build"
         ;;
     -d | --distro)
         ROS_DISTRO=$2
@@ -46,11 +47,14 @@ CONTAINER_NAME="orise-$ROS_DISTRO-test"
 SRC_REPOS=$(realpath "$SRC_REPOS")
 
 # TODO: setup apt-cache volume
-
+ROS_DISTRO=$ROS_DISTRO \
+  VOLUMES_FOLDER=$VOLUMES_FOLDER \
+  CONTAINER_NAME=$CONTAINER_NAME \
+  docker-compose -p "$ROS_DISTRO" --env-file .env $BUILD_IMAGE_OPT test
 ROS_DISTRO=$ROS_DISTRO \
   CONTAINER_NAME=$CONTAINER_NAME \
   SRC_REPOS=$SRC_REPOS \
   PACKAGE=$PACKAGE \
-  docker-compose --env-file .env up $BUILD_IMAGE_OPT test
+  docker-compose --env-file .env up test
 
 docker-compose stop test
