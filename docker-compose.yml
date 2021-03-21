@@ -17,6 +17,7 @@ services:
       - ~/.ssh/known_hosts:/home/orise/.ssh/known_hosts:rw
       - ~/.ssh/id_rsa:/home/orise/.ssh/id_rsa:ro
       - ~/.ssh/id_rsa.pub:/home/orise/.ssh/id_rsa.pub:ro
+      - ~/.gnupg:/home/orise/.gnupg:rw
       - ~/.gitconfig:/etc/gitconfig:ro
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $VOLUMES_FOLDER/$CONTAINER_NAME:/home/orise:rw
