@@ -14,12 +14,12 @@ usage() {
 # shellcheck source=/dev/null
 source .env # set initial values
 
-BUILD_IMAGE_OPT=''
+BUILD_IMAGE_OPT="pull"
 
 while [ -n "$1" ]; do
   case $1 in
   -b | --build)
-    BUILD_IMAGE_OPT="--build"
+    BUILD_IMAGE_OPT="build"
     ;;
   -h | --help) usage ;;
   -d | --distro)
@@ -50,7 +50,11 @@ fi
 ROS_DISTRO=$ROS_DISTRO \
   VOLUMES_FOLDER=$VOLUMES_FOLDER \
   CONTAINER_NAME=$CONTAINER_NAME \
-  docker-compose -p "$ROS_DISTRO" --env-file .env up $BUILD_IMAGE_OPT -d devel
+  docker-compose -p "$ROS_DISTRO" --env-file .env $BUILD_IMAGE_OPT devel
+ROS_DISTRO=$ROS_DISTRO \
+  VOLUMES_FOLDER=$VOLUMES_FOLDER \
+  CONTAINER_NAME=$CONTAINER_NAME \
+  docker-compose -p "$ROS_DISTRO" --env-file .env up -d devel
 
 docker exec -ti --user orise "$CONTAINER_NAME" /bin/bash
 
