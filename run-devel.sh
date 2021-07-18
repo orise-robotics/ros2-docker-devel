@@ -7,6 +7,7 @@ usage() {
   printf "  -b|--build\t\t Force image build\n"
   printf "  -d|--distro ROS_DISTRO Override target ROS distro in .env file\n"
   printf "  -h|--help\t\t Shows this help message\n"
+  printf "  -x|--display\t\t Enable X display. It allows running graphic tools within the container\n"
 
   exit 0
 }
@@ -25,6 +26,9 @@ while [ -n "$1" ]; do
   -d | --distro)
     ROS_DISTRO=$2
     shift
+    ;;
+  -x | --display)
+    XDISPLAY=1
     ;;
   -?*)
     echo "Unknown option '$1'" 1>&2
@@ -52,6 +56,8 @@ ROS_DISTRO=$ROS_DISTRO \
   CONTAINER_NAME=$CONTAINER_NAME \
   docker-compose -p "$ROS_DISTRO" --env-file .env up $BUILD_IMAGE_OPT -d devel
 
+test $XDISPLAY && xhost +local:root >/dev/null 2>&1
 docker exec -ti --user orise "$CONTAINER_NAME" /bin/bash
+test $XDISPLAY && xhost -local:root >/dev/null 2>&1
 
 docker-compose stop devel
