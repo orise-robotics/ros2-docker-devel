@@ -12,11 +12,10 @@ services:
       - DISPLAY
       - COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER
       - USER=orise
+      - SSH_AUTH_SOCK=$SSH_AUTH_SOCK_CONTAINER_PATH
     network_mode: host
     volumes:
-      - ~/.ssh/known_hosts:/home/orise/.ssh/known_hosts:rw
-      - ~/.ssh/id_rsa:/home/orise/.ssh/id_rsa:ro
-      - ~/.ssh/id_rsa.pub:/home/orise/.ssh/id_rsa.pub:ro
+      - $SSH_AUTH_SOCK_HOST_PATH:$SSH_AUTH_SOCK_CONTAINER_PATH
       - ~/.gnupg:/home/orise/.gnupg:rw
       - ~/.gitconfig:/etc/gitconfig:ro
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

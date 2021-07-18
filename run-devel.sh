@@ -50,6 +50,8 @@ fi
 ROS_DISTRO=$ROS_DISTRO \
   VOLUMES_FOLDER=$VOLUMES_FOLDER \
   CONTAINER_NAME=$CONTAINER_NAME \
+  SSH_AUTH_SOCK_HOST_PATH="$SSH_AUTH_SOCK" \
+  SSH_AUTH_SOCK_CONTAINER_PATH="/home/orise/.ssh-agent/ssh-agent.sock" \
   docker-compose -p "$ROS_DISTRO" --env-file .env up $BUILD_IMAGE_OPT -d devel
 
 docker exec -ti --user orise "$CONTAINER_NAME" /bin/bash
