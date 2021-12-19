@@ -29,6 +29,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     pkg-config \
     git \
     python3-pip \
+    ssh \
     vim \
     && rm -rf /var/lib/apt/lists/*
 
