@@ -21,7 +21,7 @@ will attach to the container `ros-melodic-devel`.
 
 We recommend you to try [vscode_ros2_ws](https://github.com/orise-robotics/vscode_ros2_ws), a vscode workspace with all the tools needed to develop ROS2 packages in ORise's development containers with ease.
 
-To be able to pull/push private repositories with SSH keys available in the host environment, the user needs to add the private key to ssh-agent by running `ssh-add PRIVATE_KEY_PATH`.
+To be able to pull/push private repositories with SSH keys available in the host environment, the user just need to add a private key to `ssh-agent` ([Tutorial on Generating a new SSH key and adding it to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)).
 
 ## Test in a Container
 
