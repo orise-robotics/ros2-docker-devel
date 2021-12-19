@@ -17,7 +17,7 @@ services:
     volumes:
       - $SSH_AUTH_SOCK_HOST_PATH:$SSH_AUTH_SOCK_CONTAINER_PATH
       - ~/.gnupg:/home/orise/.gnupg:rw
-      - ~/.gitconfig:/etc/gitconfig:ro
+      - ~/.gitconfig:/home/orise/.gitconfig:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $VOLUMES_FOLDER/$CONTAINER_NAME:/home/orise:rw
       - /etc/localtime:/etc/localtime:ro
