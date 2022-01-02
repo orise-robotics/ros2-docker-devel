@@ -49,7 +49,6 @@ services:
       - ~/.ssh/known_hosts:/root/.ssh/known_hosts:rw
       - ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro
       - ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub:ro
-      - ~/.gitconfig:/etc/gitconfig:ro
       - $SRC_REPOS:/root/src.repos
       # - $APT_CACHE_VOLUME:/var/cache/apt/archives
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
