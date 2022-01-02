@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:devel .
+    - run: docker build --build-arg ROS_DISTRO="$ROS_DISTRO" -t oriserobotics/ros-"$ROS_DISTRO":devel .
 
     - uses: Azure/container-scan@v0
       with:
