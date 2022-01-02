@@ -49,6 +49,7 @@ done
 
 CONTAINER_NAME="$CONTAINER_USER-$ROS_DISTRO-devel"
 COLCON_WORKSPACE_FOLDER="/home/$CONTAINER_USER"
+PROJECT_NAME="$CONTAINER_NAME"
 
 VOLUME="${VOLUMES_FOLDER}/$CONTAINER_NAME"
 
@@ -64,10 +65,12 @@ ROS_DISTRO=$ROS_DISTRO \
   CONTAINER_USER=$CONTAINER_USER \
   SSH_AUTH_SOCK_HOST_PATH="$SSH_AUTH_SOCK" \
   SSH_AUTH_SOCK_CONTAINER_PATH="/home/$CONTAINER_USER/.ssh-agent/ssh-agent.sock" \
-  docker-compose -p "$ROS_DISTRO" --env-file .env up $BUILD_IMAGE_OPT -d devel
+  docker-compose -p "$PROJECT_NAME" --env-file .env up $BUILD_IMAGE_OPT -d devel
 
 test $XDISPLAY && xhost +local:root >/dev/null 2>&1
-docker exec -ti --user orise "$CONTAINER_NAME" /bin/bash
+docker-compose -p "$PROJECT_NAME" exec --user "$CONTAINER_USER" devel /bin/bash
 test $XDISPLAY && xhost -local:root >/dev/null 2>&1
 
-docker-compose stop devel
+if [ -z "$(docker inspect "$CONTAINER_NAME" --format='{{join .ExecIDs ""}}')" ]; then
+  docker-compose -p "$PROJECT_NAME" stop devel
+fi
