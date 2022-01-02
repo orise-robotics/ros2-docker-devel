@@ -7,13 +7,11 @@ on:
       - main
   pull_request:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'
 jobs:
   docker-best-practices:
     strategy:
       matrix:
-        ros-distro: [foxy, dashing]
+        ros-distro: [galactic, foxy, dashing]
     env:
       ROS_DISTRO: ${{ matrix.ros-distro }}
       # TRIVY_IGNORE_UNFIXED: 1
