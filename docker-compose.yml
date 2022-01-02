@@ -5,21 +5,22 @@ services:
       dockerfile: Dockerfile
       args:
         ROS_DISTRO: $ROS_DISTRO
+        CONTAINER_USER: $CONTAINER_USER
     image: oriserobotics/ros-$ROS_DISTRO:devel
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
       - DISPLAY
       - COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER
-      - USER=orise
+      - USER=$CONTAINER_USER
       - SSH_AUTH_SOCK=$SSH_AUTH_SOCK_CONTAINER_PATH
     network_mode: host
     volumes:
       - $SSH_AUTH_SOCK_HOST_PATH:$SSH_AUTH_SOCK_CONTAINER_PATH
-      - ~/.gnupg:/home/orise/.gnupg:rw
-      - ~/.gitconfig:/home/orise/.gitconfig:rw
+      - ~/.gnupg:/home/$CONTAINER_USER/.gnupg:rw
+      - ~/.gitconfig:/home/$CONTAINER_USER/.gitconfig:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $VOLUMES_FOLDER/$CONTAINER_NAME:/home/orise:rw
+      - $VOLUMES_FOLDER/$CONTAINER_NAME:/home/$CONTAINER_USER:rw
       - /etc/localtime:/etc/localtime:ro
     privileged: true
     working_dir: $COLCON_WORKSPACE_FOLDER

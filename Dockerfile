@@ -2,12 +2,13 @@ ARG ROS_DISTRO
 
 FROM ros:${ROS_DISTRO}-ros-base
 
-ARG DOCKER_USER=orise
+ARG CONTAINER_USER=orise
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN useradd -s /bin/bash ${DOCKER_USER}
+RUN useradd -s /bin/bash ${CONTAINER_USER}
 
-RUN echo "${DOCKER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${DOCKER_USER} && \
-    chmod 0440 /etc/sudoers.d/${DOCKER_USER}
+RUN echo "${CONTAINER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${CONTAINER_USER} && \
+    chmod 0440 /etc/sudoers.d/${CONTAINER_USER}
 
 # install gosu
 RUN set -eux; \
@@ -57,7 +58,7 @@ RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\
 
 ENV GPG_TTY=$(tty)
 
-WORKDIR /home/${DOCKER_USER}
+WORKDIR /home/${CONTAINER_USER}/
 
 COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 

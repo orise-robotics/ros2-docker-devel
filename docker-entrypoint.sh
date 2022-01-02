@@ -2,11 +2,11 @@
 
 set -e
 
-find . \! -user orise -exec chown orise '{}' +
+find . \! -user "$USER" -exec chown "$USER" '{}' +
 
 # shellcheck source=/dev/null
 source "/opt/ros/$ROS_DISTRO/setup.bash"
 
-[ ! -e /home/orise/.bashrc ] && cp /etc/skel/.bashrc /home/orise/.bashrc
+[ ! -e "/home/$USER/.bashrc" ] && cp /etc/skel/.bashrc "/home/$USER/.bashrc"
 
-exec gosu orise "$@"
+exec gosu "$USER" "$@"
