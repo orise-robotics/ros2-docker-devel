@@ -1,4 +1,4 @@
-name: "docker-deploy-dashing"
+name: "docker-deploy-galactic"
 
 on: 
   push:
@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  ROS_DISTRO: dashing
+  ROS_DISTRO: galactic
 
 jobs:
   dockerhub-deploy:
