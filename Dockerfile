@@ -2,12 +2,13 @@ ARG ROS_DISTRO
 
 FROM ros:${ROS_DISTRO}-ros-base
 
-ARG DOCKER_USER=orise
+ARG CONTAINER_USER=orise
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN useradd -s /bin/bash ${DOCKER_USER}
+RUN useradd -s /bin/bash ${CONTAINER_USER}
 
-RUN echo "${DOCKER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${DOCKER_USER} && \
-    chmod 0440 /etc/sudoers.d/${DOCKER_USER}
+RUN echo "${CONTAINER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${CONTAINER_USER} && \
+    chmod 0440 /etc/sudoers.d/${CONTAINER_USER}
 
 # install gosu
 RUN set -eux; \
@@ -52,14 +53,12 @@ RUN apt-get update && \
     python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /home/${DOCKER_USER}/devel_ws && chown ${DOCKER_USER}:${DOCKER_USER} /home/${DOCKER_USER}/devel_ws;
-
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/bash.bashrc
 RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /etc/skel/.bashrc
 
 ENV GPG_TTY=$(tty)
 
-WORKDIR /home/${DOCKER_USER}/devel_ws
+WORKDIR /home/${CONTAINER_USER}/
 
 COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 

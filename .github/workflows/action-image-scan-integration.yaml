@@ -7,13 +7,11 @@ on:
       - main
   pull_request:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'
 jobs:
   docker-best-practices:
     strategy:
       matrix:
-        ros-distro: [foxy, dashing]
+        ros-distro: [galactic, foxy, dashing]
     env:
       ROS_DISTRO: ${{ matrix.ros-distro }}
       # TRIVY_IGNORE_UNFIXED: 1
@@ -21,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: docker build --build-arg ROS_DISTRO=$ROS_DISTRO -t oriserobotics/ros-$ROS_DISTRO:devel .
+    - run: docker build --build-arg ROS_DISTRO="$ROS_DISTRO" -t oriserobotics/ros-"$ROS_DISTRO":devel .
 
     - uses: Azure/container-scan@v0
       with:
