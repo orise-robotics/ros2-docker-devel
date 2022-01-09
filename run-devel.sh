@@ -65,7 +65,13 @@ ROS_DISTRO=$ROS_DISTRO \
   CONTAINER_USER=$CONTAINER_USER \
   SSH_AUTH_SOCK_HOST_PATH="$SSH_AUTH_SOCK" \
   SSH_AUTH_SOCK_CONTAINER_PATH="/home/$CONTAINER_USER/.ssh-agent/ssh-agent.sock" \
-  docker-compose -p "$PROJECT_NAME" --env-file .env up $BUILD_IMAGE_OPT -d devel
+  docker-compose \
+  -p "$PROJECT_NAME" \
+  -f docker-compose.yml \
+  -f compose-add-ons/nvidia-gpu.yml \
+  -f compose-add-ons/ssh-forwarding.yml \
+  --env-file .env \
+  up $BUILD_IMAGE_OPT -d devel
 
 test $XDISPLAY && xhost +local:root >/dev/null 2>&1
 docker-compose -p "$PROJECT_NAME" exec --user "$CONTAINER_USER" devel /bin/bash
