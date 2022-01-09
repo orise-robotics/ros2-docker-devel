@@ -19,6 +19,7 @@ services:
     container_name: $CONTAINER_NAME
     stdin_open: true # docker run -i
     tty: true # docker run -t
+    tmpfs: /tmp
 
   test:
     build:
@@ -36,3 +37,4 @@ services:
     stdin_open: true # docker run -i
     tty: true # docker run -t
     entrypoint: [test_entrypoint.sh, $PACKAGE]
+    tmpfs: /tmp
