@@ -5,18 +5,6 @@ FROM ros:${ROS_DISTRO}-ros-base
 ARG CONTAINER_USER=orise
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN useradd -s /bin/bash ${CONTAINER_USER}
-
-RUN echo "${CONTAINER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${CONTAINER_USER} && \
-    chmod 0440 /etc/sudoers.d/${CONTAINER_USER}
-
-# install gosu
-RUN set -eux; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends gosu; \
-    rm -rf /var/lib/apt/lists/*; \
-    gosu nobody true
-
 # make security updates
 RUN apt-get update && \
     apt-get install -y --no-install-recommends unattended-upgrades && unattended-upgrade && \
@@ -58,10 +46,14 @@ RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\
 
 ENV GPG_TTY=$(tty)
 
-WORKDIR /home/${CONTAINER_USER}/
-
 COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+RUN useradd -s /bin/bash ${CONTAINER_USER} && \
+    echo "${CONTAINER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${CONTAINER_USER} && \
+    chmod 0440 /etc/sudoers.d/${CONTAINER_USER}
 
+USER ${CONTAINER_USER}
+WORKDIR /home/${CONTAINER_USER}/
+
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["bash"]
