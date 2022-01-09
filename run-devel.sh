@@ -5,16 +5,26 @@ usage() {
   printf "Build and run the development container\n\n"
   printf "Options:\n"
   printf "  -b|--build\t\t Force image build\n"
-  printf "  -d|--distro ROS_DISTRO ROS distribution to base on (e.g. 'focal', 'galactic', ...)\n"
+  printf "  -c|--container\t\t Container name (default: '\$CONTAINER_USER-\$ROS_DISTRO-devel')\n"
+  printf "  -d|--distro ROS_DISTRO ROS distribution to base on (default: 'focal')\n"
   printf "  -h|--help\t\t Shows this help message\n"
-  printf "  -u|--user\t\t User name in the devel container\n"
+  printf "  -p|--project\t\t Define the project name (default: '\$CONTAINER_NAME')\n"
+  printf "  -u|--user\t\t User name in the devel container (default: 'orise')\n"
   printf "  -x|--display\t\t Enable X display. It allows running graphic tools within the container\n"
 
   exit 0
 }
 
+# Load configuration (environment varibles)
 # shellcheck source=/dev/null
-source .env # set initial values
+source .env
+
+# default values
+ROS_DISTRO=${ROS_DISTRO:="foxy"}
+CONTAINER_USER=${CONTAINER_USER:="orise"}
+CONTAINER_NAME=${CONTAINER_NAME:="$CONTAINER_USER-$ROS_DISTRO-devel"}
+COLCON_WORKSPACE_FOLDER=${COLCON_WORKSPACE_FOLDER:="/home/$CONTAINER_USER"}
+PROJECT_NAME=${PROJECT_NAME:="$CONTAINER_NAME"}
 
 BUILD_IMAGE_OPT=''
 
@@ -24,8 +34,16 @@ while [ -n "$1" ]; do
     BUILD_IMAGE_OPT="--build"
     ;;
   -h | --help) usage ;;
+  -c | --container)
+    CONTAINER_NAME=$2
+    shift
+    ;;
   -d | --distro)
     ROS_DISTRO=$2
+    shift
+    ;;
+  -p | --project)
+    PROJECT_NAME=$2
     shift
     ;;
   -u | --user)
@@ -46,10 +64,6 @@ while [ -n "$1" ]; do
   esac
   shift
 done
-
-CONTAINER_NAME="$CONTAINER_USER-$ROS_DISTRO-devel"
-COLCON_WORKSPACE_FOLDER="/home/$CONTAINER_USER"
-PROJECT_NAME="$CONTAINER_NAME"
 
 VOLUME="${VOLUMES_FOLDER}/$CONTAINER_NAME"
 
