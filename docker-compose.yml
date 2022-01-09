@@ -14,15 +14,11 @@ services:
       - COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER
       - USER=$CONTAINER_USER
       - SSH_AUTH_SOCK=$SSH_AUTH_SOCK_CONTAINER_PATH
-    network_mode: host
     volumes:
       - $SSH_AUTH_SOCK_HOST_PATH:$SSH_AUTH_SOCK_CONTAINER_PATH
-      - ~/.gnupg:/home/$CONTAINER_USER/.gnupg:rw
-      - ~/.gitconfig:/home/$CONTAINER_USER/.gitconfig:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $VOLUMES_FOLDER/$CONTAINER_NAME:/home/$CONTAINER_USER:rw
       - /etc/localtime:/etc/localtime:ro
-    privileged: true
     working_dir: $COLCON_WORKSPACE_FOLDER
     container_name: $CONTAINER_NAME
     stdin_open: true # docker run -i
