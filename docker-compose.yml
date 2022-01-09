@@ -16,7 +16,6 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /etc/localtime:/etc/localtime:ro
     working_dir: $COLCON_WORKSPACE_FOLDER
-    container_name: $CONTAINER_NAME
     stdin_open: true # docker run -i
     tty: true # docker run -t
     tmpfs: /tmp
@@ -33,7 +32,6 @@ services:
       - $SRC_REPOS:/root/src.repos
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     working_dir: /root
-    container_name: $CONTAINER_NAME
     stdin_open: true # docker run -i
     tty: true # docker run -t
     entrypoint: [test_entrypoint.sh, $PACKAGE]

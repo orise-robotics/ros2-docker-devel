@@ -5,7 +5,6 @@ usage() {
   printf "Build and run the development container\n\n"
   printf "Options:\n"
   printf "  -b, --build                       Force image build\n"
-  printf "  -c, --container CONTAINER         Container name (default: '\$CONTAINER_USER-\$ROS_DISTRO-devel')\n"
   printf "  -d, --distro ROS_DISTRO           ROS distribution to base on (default: 'focal')\n"
   printf "  -h, --help                        Shows this help message\n"
   printf "  -p, --project PROJECT             Define the project name (default: '\$CONTAINER_USER-\$ROS_DISTRO-devel')\n"
@@ -39,10 +38,6 @@ while [ -n "$1" ]; do
     BUILD_IMAGE_OPT="--build"
     ;;
   -h | --help) usage ;;
-  -c | --container)
-    CONTAINER_NAME=$2
-    shift
-    ;;
   -d | --distro)
     ROS_DISTRO=$2
     shift
@@ -75,9 +70,8 @@ while [ -n "$1" ]; do
 done
 
 # derived default values
-CONTAINER_NAME=${CONTAINER_NAME:-"$CONTAINER_USER-$ROS_DISTRO-devel"}
 COLCON_WORKSPACE_FOLDER=${COLCON_WORKSPACE_FOLDER:-"/home/$CONTAINER_USER"}
-PROJECT_NAME=${PROJECT_NAME:-"$CONTAINER_NAME"}
+PROJECT_NAME=${PROJECT_NAME:-"$CONTAINER_USER-$ROS_DISTRO-devel"}
 
 # configure home volume binding
 HOME_VOLUME_FOLDER=$VOLUME_BASE_FOLDER/$PROJECT_NAME
@@ -98,7 +92,6 @@ fi
 # shellcheck disable=SC2097,SC2098,SC2068
 ROS_DISTRO=$ROS_DISTRO \
   COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER \
-  CONTAINER_NAME=$CONTAINER_NAME \
   CONTAINER_USER=$CONTAINER_USER \
   HOME_VOLUME_FOLDER=$HOME_VOLUME_FOLDER \
   SSH_AUTH_SOCK_HOST_PATH="$SSH_AUTH_SOCK" \
@@ -114,6 +107,7 @@ test $XDISPLAY && xhost +local:root >/dev/null 2>&1
 docker-compose -p "$PROJECT_NAME" exec --user "$CONTAINER_USER" devel /bin/bash
 test $XDISPLAY && xhost -local:root >/dev/null 2>&1
 
-if [ -z "$(docker inspect "$CONTAINER_NAME" --format='{{join .ExecIDs ""}}')" ]; then
+CONTAINER_ID=$(docker-compose -p "$PROJECT_NAME" ps -q devel)
+if [ -z "$(docker inspect "$CONTAINER_ID" --format='{{join .ExecIDs ""}}')" ]; then
   docker-compose -p "$PROJECT_NAME" stop devel
 fi
