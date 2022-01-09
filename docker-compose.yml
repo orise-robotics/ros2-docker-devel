@@ -12,8 +12,8 @@ services:
       - COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER
       - USER=$CONTAINER_USER
     volumes:
+      - home:/home/$CONTAINER_USER:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $VOLUMES_FOLDER/$CONTAINER_NAME:/home/$CONTAINER_USER:rw
       - /etc/localtime:/etc/localtime:ro
     working_dir: $COLCON_WORKSPACE_FOLDER
     container_name: $CONTAINER_NAME
@@ -38,3 +38,6 @@ services:
     tty: true # docker run -t
     entrypoint: [test_entrypoint.sh, $PACKAGE]
     tmpfs: /tmp
+
+volumes:
+  home:

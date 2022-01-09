@@ -4,13 +4,16 @@ usage() {
   printf "Usage: %s [options]\n" "$0"
   printf "Build and run the development container\n\n"
   printf "Options:\n"
-  printf "  -b|--build\t\t Force image build\n"
-  printf "  -c|--container\t\t Container name (default: '\$CONTAINER_USER-\$ROS_DISTRO-devel')\n"
-  printf "  -d|--distro ROS_DISTRO ROS distribution to base on (default: 'focal')\n"
-  printf "  -h|--help\t\t Shows this help message\n"
-  printf "  -p|--project\t\t Define the project name (default: '\$CONTAINER_NAME')\n"
-  printf "  -u|--user\t\t User name in the devel container (default: 'orise')\n"
-  printf "  -x|--display\t\t Enable X display. It allows running graphic tools within the container\n"
+  printf "  -b, --build                       Force image build\n"
+  printf "  -c, --container CONTAINER         Container name (default: '\$CONTAINER_USER-\$ROS_DISTRO-devel')\n"
+  printf "  -d, --distro ROS_DISTRO           ROS distribution to base on (default: 'focal')\n"
+  printf "  -h, --help                        Shows this help message\n"
+  printf "  -p, --project PROJECT             Define the project name (default: '\$CONTAINER_USER-\$ROS_DISTRO-devel')\n"
+  printf "  -u, --user USER                   User name in the devel container (default: 'orise')\n"
+  printf "  -v, --volume-base-folder FOLDER   Define the base folder for bind mounting the container's home folder (default: create a named volume based on the project name).\n"
+  printf "  -x, --display                     Enable X display. It allows running graphic tools within the container\n"
+  # printf "  -g|--gpu                 Enable nvidia GPU in the container (require nvidia-container-runtime)\n"
+  # printf "  -s|--ssh-forwarding      Enable SSH forwarding (bind the ssh-agent socket defined in \$SSH_AUTH_SOCK)\n"
 
   exit 0
 }
@@ -20,13 +23,15 @@ usage() {
 source .env
 
 # default values
-ROS_DISTRO=${ROS_DISTRO:="foxy"}
-CONTAINER_USER=${CONTAINER_USER:="orise"}
-CONTAINER_NAME=${CONTAINER_NAME:="$CONTAINER_USER-$ROS_DISTRO-devel"}
-COLCON_WORKSPACE_FOLDER=${COLCON_WORKSPACE_FOLDER:="/home/$CONTAINER_USER"}
-PROJECT_NAME=${PROJECT_NAME:="$CONTAINER_NAME"}
+ROS_DISTRO=${ROS_DISTRO:-"foxy"}
+CONTAINER_USER=${CONTAINER_USER:-"orise"}
+VOLUME_BASE_FOLDER=${VOLUME_BASE_FOLDER:-}
 
 BUILD_IMAGE_OPT=''
+COMPOSE_ADD_ONS=(
+  'ssh-forwarding'
+  'nvidia-gpu'
+)
 
 while [ -n "$1" ]; do
   case $1 in
@@ -50,6 +55,10 @@ while [ -n "$1" ]; do
     CONTAINER_USER=$2
     shift
     ;;
+  -v | --volume-base-folder)
+    VOLUME_BASE_FOLDER=$2
+    shift
+    ;;
   -x | --display)
     XDISPLAY=1
     ;;
@@ -65,25 +74,39 @@ while [ -n "$1" ]; do
   shift
 done
 
-VOLUME="${VOLUMES_FOLDER}/$CONTAINER_NAME"
+# derived default values
+CONTAINER_NAME=${CONTAINER_NAME:-"$CONTAINER_USER-$ROS_DISTRO-devel"}
+COLCON_WORKSPACE_FOLDER=${COLCON_WORKSPACE_FOLDER:-"/home/$CONTAINER_USER"}
+PROJECT_NAME=${PROJECT_NAME:-"$CONTAINER_NAME"}
 
-if [ ! -d "${VOLUME}" ]; then
-  mkdir -p "${VOLUME}"
+# configure home volume binding
+HOME_VOLUME_FOLDER=$VOLUME_BASE_FOLDER/$PROJECT_NAME
+if [ -n "$VOLUME_BASE_FOLDER" ];then
+  # create folder if it doesn't exist
+  if [ ! -d "${HOME_VOLUME_FOLDER}" ]; then
+    mkdir -p "${HOME_VOLUME_FOLDER}"
+  fi
+  COMPOSE_ADD_ONS+=("bind-home-volume")
 fi
 
-# shellcheck disable=SC2097,SC2098
+# Build compose add-ons options
+if [ -n "${COMPOSE_ADD_ONS[*]}" ]; then
+  COMPOSE_ADD_ONS_OPT=( "${COMPOSE_ADD_ONS[@]/#/-f\ .\/compose-add-ons\/}" )
+  COMPOSE_ADD_ONS_OPT=( "${COMPOSE_ADD_ONS_OPT[@]/%/.yml}" )
+fi
+
+# shellcheck disable=SC2097,SC2098,SC2068
 ROS_DISTRO=$ROS_DISTRO \
-  VOLUMES_FOLDER=$VOLUMES_FOLDER \
   COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER \
   CONTAINER_NAME=$CONTAINER_NAME \
   CONTAINER_USER=$CONTAINER_USER \
+  HOME_VOLUME_FOLDER=$HOME_VOLUME_FOLDER \
   SSH_AUTH_SOCK_HOST_PATH="$SSH_AUTH_SOCK" \
   SSH_AUTH_SOCK_CONTAINER_PATH="/home/$CONTAINER_USER/.ssh-agent/ssh-agent.sock" \
   docker-compose \
   -p "$PROJECT_NAME" \
   -f docker-compose.yml \
-  -f compose-add-ons/nvidia-gpu.yml \
-  -f compose-add-ons/ssh-forwarding.yml \
+  ${COMPOSE_ADD_ONS_OPT[@]} \
   --env-file .env \
   up $BUILD_IMAGE_OPT -d devel
 
