@@ -10,9 +10,16 @@ usage() {
   printf "  -p, --project PROJECT             Define the project name (default: '\$CONTAINER_USER-\$ROS_DISTRO-devel')\n"
   printf "  -u, --user USER                   User name in the devel container (default: 'orise')\n"
   printf "  -v, --volume-base-folder FOLDER   Define the base folder for bind mounting the container's home folder (default: create a named volume based on the project name).\n"
-  printf "  -x, --display                     Enable X display. It allows running graphic tools within the container\n"
+  printf "  -x, --xdisplay                     Enable X display. It allows running graphic tools within the container\n"
   # printf "  -g|--gpu                 Enable nvidia GPU in the container (require nvidia-container-runtime)\n"
   # printf "  -s|--ssh-forwarding      Enable SSH forwarding (bind the ssh-agent socket defined in \$SSH_AUTH_SOCK)\n"
+
+  printf "\nEnvironment Variable / Option:\n"
+  printf "  CONTAINER_USER            -u, --user\n"
+  printf "  PROJECT_NAME              -p, --project\n"
+  printf "  ROS_DISTRO                -d, --distro\n"
+  printf "  VOLUME_BASE_FOLDER        -v, --volume-base-folder\n"
+  printf "  XDISPLAY                  -x, --xdisplay\n"
 
   exit 0
 }
@@ -54,7 +61,7 @@ while [ -n "$1" ]; do
     VOLUME_BASE_FOLDER=$2
     shift
     ;;
-  -x | --display)
+  -x | --xdisplay)
     XDISPLAY=1
     ;;
   -?*)
