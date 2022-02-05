@@ -6,20 +6,22 @@ usage() {
   printf "Options:\n"
   printf "  -b, --build                       Force image build\n"
   printf "  -d, --distro ROS_DISTRO           ROS distribution to base on (default: 'focal')\n"
+  printf "  -g, --gpu                         Enable nvidia GPU in the container (require nvidia-container-runtime)\n"
   printf "  -h, --help                        Shows this help message\n"
   printf "  -p, --project PROJECT             Define the project name (default: '\$CONTAINER_USER-\$ROS_DISTRO-devel')\n"
+  printf "  -s, --ssh-forwarding              Enable SSH forwarding (bind the ssh-agent socket defined in \$SSH_AUTH_SOCK)\n"
   printf "  -u, --user USER                   User name in the devel container (default: 'orise')\n"
   printf "  -v, --volume-base-folder FOLDER   Define the base folder for bind mounting the container's home folder (default: create a named volume based on the project name).\n"
-  printf "  -x, --xdisplay                     Enable X display. It allows running graphic tools within the container\n"
-  # printf "  -g|--gpu                 Enable nvidia GPU in the container (require nvidia-container-runtime)\n"
-  # printf "  -s|--ssh-forwarding      Enable SSH forwarding (bind the ssh-agent socket defined in \$SSH_AUTH_SOCK)\n"
+  printf "  -x, --xdisplay                    Enable X display. It allows running graphic tools within the container\n"
 
   printf "\nEnvironment Variable / Option:\n"
-  printf "  CONTAINER_USER            -u, --user\n"
-  printf "  PROJECT_NAME              -p, --project\n"
-  printf "  ROS_DISTRO                -d, --distro\n"
-  printf "  VOLUME_BASE_FOLDER        -v, --volume-base-folder\n"
-  printf "  XDISPLAY                  -x, --xdisplay\n"
+  printf "  CONTAINER_USER          -u, --user\n"
+  printf "  ENABLE_NVIDIA_GPU       -g, --gpu\n"
+  printf "  ENABLE_SSH_FORWARDING   -s, --ssh-forwarding\n"
+  printf "  PROJECT_NAME            -p, --project\n"
+  printf "  ROS_DISTRO              -d, --distro\n"
+  printf "  VOLUME_BASE_FOLDER      -v, --volume-base-folder\n"
+  printf "  XDISPLAY                -x, --xdisplay\n"
 
   exit 0
 }
@@ -34,10 +36,7 @@ CONTAINER_USER=${CONTAINER_USER:-"orise"}
 VOLUME_BASE_FOLDER=${VOLUME_BASE_FOLDER:-}
 
 BUILD_IMAGE_OPT=''
-COMPOSE_ADD_ONS=(
-  'ssh-forwarding'
-  'nvidia-gpu'
-)
+COMPOSE_ADD_ONS=()
 
 while [ -n "$1" ]; do
   case $1 in
@@ -49,10 +48,12 @@ while [ -n "$1" ]; do
     ROS_DISTRO=$2
     shift
     ;;
+  -g | --gpu) ENABLE_NVIDIA_GPU=1 ;;
   -p | --project)
     PROJECT_NAME=$2
     shift
     ;;
+  -s | --ssh-agent-forwarding) ENABLE_SSH_FORWARDING=1 ;;
   -u | --user)
     CONTAINER_USER=$2
     shift
@@ -79,6 +80,10 @@ done
 # derived default values
 COLCON_WORKSPACE_FOLDER=${COLCON_WORKSPACE_FOLDER:-"/home/$CONTAINER_USER"}
 PROJECT_NAME=${PROJECT_NAME:-"$CONTAINER_USER-$ROS_DISTRO-devel"}
+
+# Compose add-ons
+if [ $ENABLE_NVIDIA_GPU ]; then COMPOSE_ADD_ONS+=("nvidia-gpu");fi
+if [ $ENABLE_SSH_FORWARDING ]; then COMPOSE_ADD_ONS+=("ssh-forwarding");fi
 
 # configure home volume binding
 HOME_VOLUME_FOLDER=$VOLUME_BASE_FOLDER/$PROJECT_NAME
