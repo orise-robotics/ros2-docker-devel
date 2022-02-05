@@ -2,7 +2,6 @@ ARG ROS_DISTRO
 
 FROM ros:${ROS_DISTRO}-ros-base
 
-ARG CONTAINER_USER=orise
 ARG DEBIAN_FRONTEND=noninteractive
 
 # make security updates
@@ -48,6 +47,7 @@ ENV GPG_TTY=$(tty)
 
 COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 
+ARG CONTAINER_USER=orise
 RUN useradd -s /bin/bash ${CONTAINER_USER} && \
     echo "${CONTAINER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${CONTAINER_USER} && \
     chmod 0440 /etc/sudoers.d/${CONTAINER_USER}
