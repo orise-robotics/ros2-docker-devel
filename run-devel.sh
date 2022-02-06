@@ -61,6 +61,7 @@ while [ -n "$1" ]; do
     ;;
   -s | --ssh-agent-forwarding) ENABLE_SSH_FORWARDING=1 ;;
   -u | --user)
+    BUILD_IMAGE=1
     CONTAINER_USER=$2
     shift
     ;;
@@ -111,7 +112,12 @@ fi
 if [ "$BUILD_IMAGE" ]; then
   NO_CACHE_OPT=${FORCE_BUILD_IMAGE:+"--no-cache"}
   COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER \
-    docker-compose build $NO_CACHE_OPT --build-arg ROS_DISTRO="$ROS_DISTRO" --build-arg CONTAINER_USER="$CONTAINER_USER" devel
+    docker-compose build $NO_CACHE_OPT \
+    --build-arg ROS_DISTRO="$ROS_DISTRO" \
+    --build-arg CONTAINER_USER="$CONTAINER_USER" \
+    --build-arg USER_UID="$(id -u "$USER")" \
+    --build-arg USER_GID="$(id -g "$USER")" \
+    devel
 fi
 
 # shellcheck disable=SC2097,SC2098,SC2068
@@ -121,6 +127,8 @@ ROS_DISTRO=$ROS_DISTRO \
   HOME_VOLUME_FOLDER=$HOME_VOLUME_FOLDER \
   SSH_AUTH_SOCK_HOST_PATH="$SSH_AUTH_SOCK" \
   SSH_AUTH_SOCK_CONTAINER_PATH="/home/$CONTAINER_USER/.ssh-agent/ssh-agent.sock" \
+  USER_UID=$(id -u "$USER") \
+  USER_GID=$(id -g "$USER") \
   docker-compose \
   -p "$PROJECT_NAME" \
   -f docker-compose.yml \

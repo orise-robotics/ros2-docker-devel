@@ -19,6 +19,7 @@ services:
     stdin_open: true # docker run -i
     tty: true # docker run -t
     tmpfs: /tmp
+    user: $CONTAINER_USER
 
   test:
     build:

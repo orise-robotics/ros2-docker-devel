@@ -40,20 +40,19 @@ RUN apt-get update && \
     python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/bash.bashrc
 RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /etc/skel/.bashrc
+RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/skel/.bashrc
 
 ENV GPG_TTY=$(tty)
 
 COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 
 ARG CONTAINER_USER=orise
-RUN useradd -s /bin/bash ${CONTAINER_USER} && \
+ARG USER_UID=1000
+ARG USER_GID=1000
+RUN useradd -s /bin/bash -u ${USER_UID} -G sudo -m ${CONTAINER_USER} && \
+    groupmod -g ${USER_GID} ${CONTAINER_USER} && \
     echo "${CONTAINER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${CONTAINER_USER} && \
     chmod 0440 /etc/sudoers.d/${CONTAINER_USER}
 
-USER ${CONTAINER_USER}
-WORKDIR /home/${CONTAINER_USER}/
-
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["bash"]
+CMD ["/bin/bash"]
