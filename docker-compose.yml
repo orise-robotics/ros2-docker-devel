@@ -18,7 +18,7 @@ services:
     working_dir: $COLCON_WORKSPACE_FOLDER
     stdin_open: true # docker run -i
     tty: true # docker run -t
-    tmpfs: /tmp
+    tmpfs: /tmp:exec
     user: $CONTAINER_USER
 
   test:
