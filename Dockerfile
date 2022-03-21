@@ -2,20 +2,7 @@ ARG ROS_DISTRO
 
 FROM ros:${ROS_DISTRO}-ros-base
 
-ARG CONTAINER_USER=orise
 ARG DEBIAN_FRONTEND=noninteractive
-
-RUN useradd -s /bin/bash ${CONTAINER_USER}
-
-RUN echo "${CONTAINER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${CONTAINER_USER} && \
-    chmod 0440 /etc/sudoers.d/${CONTAINER_USER}
-
-# install gosu
-RUN set -eux; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends gosu; \
-    rm -rf /var/lib/apt/lists/*; \
-    gosu nobody true
 
 # make security updates
 RUN apt-get update && \
@@ -53,15 +40,17 @@ RUN apt-get update && \
     python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/bash.bashrc
 RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /etc/skel/.bashrc
+RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/skel/.bashrc
 
 ENV GPG_TTY=$(tty)
 
-WORKDIR /home/${CONTAINER_USER}/
+ARG CONTAINER_USER=orise
+ARG USER_UID=1000
+ARG USER_GID=1000
+RUN useradd -ls /bin/bash -u ${USER_UID} -G sudo -m ${CONTAINER_USER} && \
+    groupmod -g ${USER_GID} ${CONTAINER_USER} && \
+    echo "${CONTAINER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${CONTAINER_USER} && \
+    chmod 0440 /etc/sudoers.d/${CONTAINER_USER}
 
-COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
-
-ENTRYPOINT ["docker-entrypoint.sh"]
-
-CMD ["bash"]
+CMD ["/bin/bash"]

@@ -1,0 +1,7 @@
+volumes:
+  home:
+    driver: local
+    driver_opts:
+      type: none
+      device: $HOME_VOLUME_FOLDER
+      o: bind
