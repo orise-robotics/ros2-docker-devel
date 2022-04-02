@@ -6,12 +6,14 @@ usage() {
   printf "Options:\n"
   printf "  -b, --build                   Build image (with cache enabled)\n"
   printf "  -d, --distro ROS_DISTRO       Override the ROS distribution (default: 'focal')\n"
+  printf "  -e, --exec \"EXEC_COMMAND\"   Override the command to execute in the container (default: '/bin/bash')\n"
   printf "  -f, --force-build             Force image build (disable cache)\n"
   printf "  -h, --help                    Shows this help message\n"
   printf "  -p, --prefix PROJECT_PREFIX   Override the project name prefix  (default: 'ros')\n"
 
   printf "\n\nEnvironment Variables:\n"
   printf "  CONTAINER_USER          User name in the devel container (default: '\$USER')\n"
+  printf "  EXEC_COMMAND            Command to execute in the container (default: '/bin/bash')\n"
   printf "  ENABLE_NVIDIA_GPU       Enable nvidia GPU in the container (require nvidia-container-runtime)\n"
   printf "  ENABLE_SSH_FORWARDING   Enable SSH forwarding (bind the ssh-agent socket defined in \$SSH_AUTH_SOCK)\n"
   printf "  PROJECT_PREFIX          Define the project name prefix (default: 'ros')\n"
@@ -33,6 +35,7 @@ ROS_DISTRO=${ROS_DISTRO:-"foxy"}
 CONTAINER_USER=${CONTAINER_USER:-"$USER"}
 PROJECT_PREFIX=${PROJECT_NAME:-"ros"}
 VOLUME_BASE_FOLDER=${VOLUME_BASE_FOLDER:-}
+EXEC_COMMAND=${EXEC_COMMAND:-"/bin/bash"}
 
 BUILD_IMAGE=
 FORCE_BUILD_IMAGE=
@@ -43,6 +46,10 @@ while [ -n "$1" ]; do
   -b | --build) BUILD_IMAGE=1 ;;
   -d | --distro)
     ROS_DISTRO=$2
+    shift
+    ;;
+  -e | --exec)
+    EXEC_COMMAND=$2
     shift
     ;;
   -h | --help) usage ;;
@@ -125,7 +132,8 @@ if docker-compose -p "$PROJECT_NAME" ps --services --filter status=stopped | gre
   exit 1
 fi
 
-docker-compose -p "$PROJECT_NAME" exec devel /bin/bash
+# shellcheck disable=SC2086
+docker-compose -p "$PROJECT_NAME" exec devel $EXEC_COMMAND
 
 CONTAINER_ID=$(docker-compose -p "$PROJECT_NAME" ps -q devel)
 if [ -z "$(docker inspect "$CONTAINER_ID" --format='{{join .ExecIDs ""}}')" ]; then
