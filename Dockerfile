@@ -53,4 +53,7 @@ RUN useradd -ls /bin/bash -u ${USER_UID} -G sudo -m ${CONTAINER_USER} && \
     echo "${CONTAINER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${CONTAINER_USER} && \
     chmod 0440 /etc/sudoers.d/${CONTAINER_USER}
 
-CMD ["/bin/bash"]
+COPY devel-entrypoint.sh /usr/local/bin
+
+ENTRYPOINT ["devel-entrypoint.sh"]
+CMD ["tail", "-f", "/dev/null"]
