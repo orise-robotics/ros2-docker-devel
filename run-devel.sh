@@ -98,15 +98,17 @@ if [ -n "${COMPOSE_ADD_ONS[*]}" ]; then
   COMPOSE_ADD_ONS_OPT=("${COMPOSE_ADD_ONS_OPT[@]/%/.yml}")
 fi
 
+USER_UID=$(id -u "$USER")
+USER_GID=$(id -g "$USER")
+
 # Build image
 if [ "$BUILD_IMAGE" ]; then
   NO_CACHE_OPT=${FORCE_BUILD_IMAGE:+"--no-cache"}
   COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER \
+  USER_UID="$USER_UID" \
+  USER_GID="$USER_GID" \
     docker-compose build $NO_CACHE_OPT \
     --build-arg ROS_DISTRO="$ROS_DISTRO" \
-    --build-arg CONTAINER_USER="$CONTAINER_USER" \
-    --build-arg USER_UID="$(id -u "$USER")" \
-    --build-arg USER_GID="$(id -g "$USER")" \
     devel
 fi
 
@@ -117,8 +119,8 @@ ROS_DISTRO=$ROS_DISTRO \
   HOME_VOLUME_FOLDER=$HOME_VOLUME_FOLDER \
   SSH_AUTH_SOCK_HOST_PATH="$SSH_AUTH_SOCK" \
   SSH_AUTH_SOCK_CONTAINER_PATH="/home/$CONTAINER_USER/.ssh-agent/ssh-agent.sock" \
-  USER_UID=$(id -u "$USER") \
-  USER_GID=$(id -g "$USER") \
+  USER_UID="$USER_UID" \
+  USER_GID="$USER_GID" \
   docker-compose \
   -p "$PROJECT_NAME" \
   -f docker-compose.yml \
@@ -133,7 +135,7 @@ if docker-compose -p "$PROJECT_NAME" ps --services --filter status=stopped | gre
 fi
 
 # shellcheck disable=SC2086
-docker-compose -p "$PROJECT_NAME" exec devel $EXEC_COMMAND
+docker-compose -p "$PROJECT_NAME" exec --user "$CONTAINER_USER" -w "/home/$CONTAINER_USER" devel $EXEC_COMMAND
 
 CONTAINER_ID=$(docker-compose -p "$PROJECT_NAME" ps -q devel)
 if [ -z "$(docker inspect "$CONTAINER_ID" --format='{{join .ExecIDs ""}}')" ]; then
