@@ -10,6 +10,7 @@ usage() {
   printf "  -f, --force-build             Force image build (disable cache)\n"
   printf "  -h, --help                    Shows this help message\n"
   printf "  -p, --prefix PROJECT_PREFIX   Override the project name prefix  (default: 'ros')\n"
+  printf "  -r, --recreate                Recreates the container even if there was no changes in configuration\n"
 
   printf "\n\nEnvironment Variables:\n"
   printf "  CONTAINER_USER          User name in the devel container (default: '\$USER')\n"
@@ -40,6 +41,7 @@ EXEC_COMMAND=${EXEC_COMMAND:-"/bin/bash"}
 BUILD_IMAGE=
 FORCE_BUILD_IMAGE=
 COMPOSE_ADD_ONS=()
+COMPOSE_OPT_ARGS=()
 
 while [ -n "$1" ]; do
   case $1 in
@@ -61,6 +63,7 @@ while [ -n "$1" ]; do
     PROJECT_PREFIX=$2
     shift
     ;;
+  -r | --recreate) COMPOSE_OPT_ARGS+=("--force-recreate") ;;
   -?*)
     echo "Unknown option '$1'" 1>&2
     exit 1
@@ -126,7 +129,7 @@ ROS_DISTRO=$ROS_DISTRO \
   -f docker-compose.yml \
   ${COMPOSE_ADD_ONS_OPT[@]} \
   --env-file .env \
-  up -d devel
+  up ${COMPOSE_OPT_ARGS[@]} -d devel
 
 # Check if the service is running
 if docker-compose -p "$PROJECT_NAME" ps --services --filter status=stopped | grep -x -q devel; then
