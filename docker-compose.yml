@@ -5,21 +5,18 @@ services:
       dockerfile: Dockerfile
       args:
         ROS_DISTRO: $ROS_DISTRO
-        CONTAINER_USER: $CONTAINER_USER
     image: oriserobotics/ros-$ROS_DISTRO:devel
     environment:
-      - DISPLAY
       - COLCON_WORKSPACE_FOLDER=$COLCON_WORKSPACE_FOLDER
       - USER=$CONTAINER_USER
+      - USER_UID=$USER_UID
+      - USER_GID=$USER_GID
     volumes:
       - home:/home/$CONTAINER_USER:rw
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /etc/localtime:/etc/localtime:ro
-    working_dir: $COLCON_WORKSPACE_FOLDER
     stdin_open: true # docker run -i
     tty: true # docker run -t
     tmpfs: /tmp:exec
-    user: $CONTAINER_USER
 
   test:
     build:

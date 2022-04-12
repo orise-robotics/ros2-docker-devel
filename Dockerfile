@@ -16,7 +16,9 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     bash-completion \
     pkg-config \
     git \
+    gosu \
     python3-pip \
+    nano \
     ssh \
     vim \
     && rm -rf /var/lib/apt/lists/*
@@ -45,12 +47,7 @@ RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/skel/.bashrc
 
 ENV GPG_TTY=$(tty)
 
-ARG CONTAINER_USER=orise
-ARG USER_UID=1000
-ARG USER_GID=1000
-RUN useradd -ls /bin/bash -u ${USER_UID} -G sudo -m ${CONTAINER_USER} && \
-    groupmod -g ${USER_GID} ${CONTAINER_USER} && \
-    echo "${CONTAINER_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/${CONTAINER_USER} && \
-    chmod 0440 /etc/sudoers.d/${CONTAINER_USER}
+COPY devel-entrypoint.sh /usr/local/bin
 
-CMD ["/bin/bash"]
+ENTRYPOINT ["devel-entrypoint.sh"]
+CMD ["tail", "-f", "/dev/null"]
