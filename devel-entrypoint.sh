@@ -3,10 +3,11 @@
 set -e
 
 if [ ! "$(getent passwd "$USER")" ]; then
-    useradd -s /bin/bash -u "${USER_UID}" -G sudo -m "${USER}"
+    useradd -s /bin/bash -u "${USER_UID}" -G sudo "${USER}"
     groupmod -g "${USER_GID}" "${USER}"
     echo "${USER} ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/"${USER}"
     chmod 0440 /etc/sudoers.d/"${USER}"
+    chown "$USER" -R "/home/$USER"
 elif [[ ! "$(id -u "$USER")" == "${USER_UID}" || ! "$(id -g "$USER")" == "${USER_GID}" ]]; then
     exit 1
 fi
