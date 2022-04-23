@@ -1,4 +1,4 @@
-name: "docker-build"
+name: "container-scan"
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
   docker-best-practices:
     strategy:
       matrix:
-        ros-distro: [galactic, foxy, dashing]
+        ros-distro: [galactic, foxy]
     env:
       ROS_DISTRO: ${{ matrix.ros-distro }}
       # TRIVY_IGNORE_UNFIXED: 1
