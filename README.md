@@ -23,24 +23,6 @@ We recommend you to try [vscode_ros2_ws](https://github.com/orise-robotics/vscod
 
 To be able to pull/push private repositories with SSH keys available in the host environment, the user just need to add a private key to `ssh-agent` ([Tutorial on Generating a new SSH key and adding it to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)).
 
-## Test in a Container
-
-The script `run_test.sh` starts a test container given the target ROS distro, then test the target package selected from the provided source list ([vcstools](https://github.com/dirk-thomas/vcstool) format). For example:
-
-Given there is an already built test image for `noetic` and a file `my_srcs.repo` containing:
-```yaml
-repositories:
-  navigation:
-    type: git
-    url: https://github.com/ros-planning/navigation
-    version: noetic-devel
-```
-The command:
-```console
-./run-tests.sh -d noetic -s my_srcs.repos navigation/move_base
-```
-will get package source code, download the dependencies, build, install and test only the target library (it would run all the packages of the metapackage if only `navigation` is provided). This isolated build and test is particularly powerful to catch problems of missing dependencies and wrong installation.
-
 ## ORise Docker Images
 
 We provide some ready-to-use development images in the [DockerHub](https://hub.docker.com/u/oriserobotics). However, you can also build the images yourself.
