@@ -1,8 +1,8 @@
 # ORise's ROS Workspace
 
-![docker-deploy-foxy](https://github.com/open-br/ros_ws/workflows/docker-deploy-foxy/badge.svg?branch=master)
-![docker-deploy-dashing](https://github.com/open-br/ros_ws/workflows/docker-deploy-dashing/badge.svg?branch=master)
-![docker-build](https://github.com/open-br/ros_ws/workflows/docker-build/badge.svg?branch=master)
+![dockerhub-deploy](https://github.com/orise-robotics/ros_ws/workflows/dockerhub-deploy/badge.svg?branch=master)
+![container-scan](https://github.com/orise-robotics/ros_ws/workflows/container-scan/badge.svg?branch=master)
+![super-lint](https://github.com/orise-robotics/ros_ws/workflows/super-lint/badge.svg?branch=master)
 
 This repository provides simple tools to develop and test ROS and ROS2 packages using Docker.
 
