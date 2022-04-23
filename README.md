@@ -19,7 +19,7 @@ Required Dependencies:
 
 To access Nvidia GPU resources in the container, install [`nvidia-container-runtime`](https://nvidia.github.io/nvidia-container-runtime/). For Debian-based distros:
 
-```
+```bash
 curl -s -L https://nvidia.github.io/nvidia-container-runtime/gpgkey | \
   sudo apt-key add -
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
@@ -37,8 +37,8 @@ To be able to pull/push private repositories with SSH keys available in the host
 
 This script manages creation and execution of development containers. Once it is configured (through the `.env` file and command-line arguments), the developer just need to run `./ros2-devel.sh` to:
 
- - Build the image (or create the container) at the very first time you run it, or when you whish to create a fresh environment
- - Start the container (when it is not running), or attach the running container (create a new bash session)
+- Build the image (or create the container) at the very first time you run it, or when you whish to create a fresh environment
+- Start the container (when it is not running), or attach the running container (create a new bash session)
 
 The containers are identified by the PROJECT_PREFIX and ROS_DISTRO arguments, allowing the user to create multiple environments by varying ROS distributions and projects. For example, the user can create isolated environments to develop different projects under different distros by calling:
 
@@ -46,7 +46,7 @@ The containers are identified by the PROJECT_PREFIX and ROS_DISTRO arguments, al
 ./ros2-devel.sh -d DISTRO -p PROJECT
 ```
 
-For example, each of the following commands create a :
+For example, each of the following commands create a container:
 ```bash
 ./ros2-devel.sh -p moveit2 -d foxy   # creates or attach to container 'moveit2_foxy'
 ./ros2-devel.sh -p moveit2 -d galactic  # creates or attach to container 'moveit2_galactic'
