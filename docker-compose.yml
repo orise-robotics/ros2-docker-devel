@@ -18,22 +18,5 @@ services:
     tty: true # docker run -t
     tmpfs: /tmp:exec
 
-  test:
-    build:
-      context: .
-      dockerfile: Dockerfile.test
-      args:
-        ROS_DISTRO: $ROS_DISTRO
-    environment:
-      - DISPLAY
-    volumes:
-      - $SRC_REPOS:/root/src.repos
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    working_dir: /root
-    stdin_open: true # docker run -i
-    tty: true # docker run -t
-    entrypoint: [test_entrypoint.sh, $PACKAGE]
-    tmpfs: /tmp
-
 volumes:
   home:
