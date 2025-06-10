@@ -42,6 +42,14 @@ RUN apt-get update && \
     python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
+# install nvidia-opencl-dev if ENABLE_NVIDIA_GPU is set
+ARG ENABLE_NVIDIA_GPU
+RUN test -n "$ENABLE_NVIDIA_GPU" && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends nvidia-opencl-dev && \
+    mkdir -p /etc/OpenCL/vendors/ && \
+    sh -c 'echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd'
+
 RUN echo "PS1='\[\033[01;35m\]ros-$ROS_DISTRO@devel\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /etc/skel/.bashrc
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/skel/.bashrc
 
