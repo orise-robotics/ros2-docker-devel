@@ -111,7 +111,7 @@ if [ "$BUILD_IMAGE" ]; then
   USER_UID="$USER_UID" \
   USER_GID="$USER_GID" \
   ROS_DISTRO="$ROS_DISTRO" \
-    docker-compose build $NO_CACHE_OPT \
+    docker compose build $NO_CACHE_OPT \
     devel
 fi
 
@@ -124,7 +124,7 @@ ROS_DISTRO="$ROS_DISTRO" \
   SSH_AUTH_SOCK_CONTAINER_PATH="/home/$CONTAINER_USER/.ssh-agent/ssh-agent.sock" \
   USER_UID="$USER_UID" \
   USER_GID="$USER_GID" \
-  docker-compose \
+  docker compose \
   -p "$PROJECT_NAME" \
   -f docker-compose.yml \
   ${COMPOSE_ADD_ONS_OPT[@]} \
@@ -132,15 +132,15 @@ ROS_DISTRO="$ROS_DISTRO" \
   up ${COMPOSE_OPT_ARGS[@]} -d devel
 
 # Check if the service is running
-if docker-compose -p "$PROJECT_NAME" ps --services --filter status=stopped | grep -x -q devel; then
+if docker compose -p "$PROJECT_NAME" ps --services --filter status=stopped | grep -x -q devel; then
   echo "Failed to run devel service. Try running run-devel.sh with -b option."
   exit 1
 fi
 
 # shellcheck disable=SC2086
-docker-compose -p "$PROJECT_NAME" exec --user "$CONTAINER_USER" -w "/home/$CONTAINER_USER" devel $EXEC_COMMAND
+docker compose -p "$PROJECT_NAME" exec --user "$CONTAINER_USER" -w "/home/$CONTAINER_USER" devel $EXEC_COMMAND
 
-CONTAINER_ID=$(docker-compose -p "$PROJECT_NAME" ps -q devel)
+CONTAINER_ID=$(docker compose -p "$PROJECT_NAME" ps -q devel)
 if [ -z "$(docker inspect "$CONTAINER_ID" --format='{{join .ExecIDs ""}}')" ]; then
-  docker-compose -p "$PROJECT_NAME" stop devel
+  docker compose -p "$PROJECT_NAME" stop devel
 fi
